@@ -1,3 +1,9 @@
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.input-reset {
+  @apply appearance-none outline-none border border-black/70 focus:border-2 focus:border-green-500;
+}

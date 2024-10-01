@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import LanguageSVG from "../assets/SVG/LanguageSVG.jsx";
 import Menu from "./Menu.jsx";
-import FIndWJ from "./FIndWJ.jsx";
+import FindWJ from "./FindWJ.jsx";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const menuItems = [
     { linkTo: "/", name: "Home" },
     { linkTo: "/", name: "About" },
+    { linkTo: "/login", name: "Login"}
   ];
 
   useEffect(() => {
@@ -30,8 +32,8 @@ export default function Navbar() {
         isScrolled ? "bg-gray-200" : "bg-white"
       }`}
     >
-      <p className="text-2xl text-green-600 font-bold">Fai&Vai</p>
-      <FIndWJ />
+      <Link to={'/'} className="text-2xl text-green-600 font-bold">Fai&Vai</Link>
+      <FindWJ />
       <div className="hidden sm:inline-flex gap-4 items-center">
         <LanguageSVG />
         <Menu menuItems={menuItems} />

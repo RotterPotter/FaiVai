@@ -19,7 +19,7 @@ export default function Menu({ menuItems = [] }) {
       {isActive && (
         <div className="absolute top-9 flex flex-col gap-1 bg-gray-100 rounded-xl px-5 py-2">
           {menuItems.map((item, index) => (
-            <MenuItem key={index} {...item} />
+            <MenuItem key={index} {...item} setIsActive={setIsActive} />
           ))}
         </div>
       )}

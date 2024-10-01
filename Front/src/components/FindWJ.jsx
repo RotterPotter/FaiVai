@@ -9,7 +9,7 @@ export default function FIndWJ(className = "") {
     <div className={`hidden md:flex justify-center items-center  gap-20`}>
       <Link to="/">
         <button className="text-xl ">
-          <div className="flex flex-col items-center -mb-2 hover:text-green-600">
+          <div className="flex flex-col items-center -mb-2 hover:text-green-600 text-black">
             Find Jobs
             <GreenCircle
               active={location == "/" ? true : false}
@@ -20,7 +20,7 @@ export default function FIndWJ(className = "") {
       </Link>
       <Link to="/findworker">
         <button className="text-xl">
-          <div className="flex flex-col items-center -mb-2 hover:text-green-600">
+          <div className="flex flex-col items-center -mb-2 hover:text-green-600 text-black">
             Find Worker
             <GreenCircle
               active={location == "/findworker" ? true : false}
