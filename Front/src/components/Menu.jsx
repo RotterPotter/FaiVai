@@ -1,26 +1,39 @@
-import React, { useState } from "react";
-import MenuItem from "./MenuItem";
 import MenuSVG from "../assets/SVG/MenuSVG";
 import ProfileSVG from "../assets/SVG/ProfileSVG";
+import React, { useContext, useState } from "react";
+import { Link } from "react-router-dom";
+import Logout from "./Logout";
+import { UserContext } from "../context/UserContext";
 
-export default function Menu({ menuItems = [] }) {
-  const [isActive, setIsActive] = useState(false);
+export default function Menu() {
+  const [active, setActive] = useState(false);
+  const [token, setToken] = useContext(UserContext);
+
+  const handleClick = () => {
+    setActive(!active);
+  };
 
   return (
-    <div className="flex justify-center relative">
+    <div className="flex justify-center items-center">
       <button
-        onClick={() => setIsActive(!isActive)}
-        className="inline-flex gap-1 items-center  rounded-full px-3 py-1 border-[1.5px] border-black hover:bg-gray-50 hover:shadow-lg"
+        onClick={handleClick}
+        className="relative flex justify-center items-center gap-2 rounded-full border border-black px-2 py-1"
       >
-        <MenuSVG></MenuSVG>
-        <ProfileSVG></ProfileSVG>
+        <MenuSVG />
+        <ProfileSVG />
       </button>
-
-      {isActive && (
-        <div className="absolute top-9 flex flex-col gap-1 bg-gray-100 rounded-xl px-5 py-2">
-          {menuItems.map((item, index) => (
-            <MenuItem key={index} {...item} setIsActive={setIsActive} />
-          ))}
+      {active && (
+        <div className="absolute top-[60px] border border-black/30 shadow-xl flex flex-col p-2 gap-2 rounded-xl items-center justify-center w-[100px]">
+          <Link onClick={handleClick} to={"/"}>
+            Home
+          </Link>
+          {token ? (
+            <Logout onClick={handleClick} />
+          ) : (
+            <Link onClick={handleClick} to={"/login"}>
+              Login
+            </Link>
+          )}
         </div>
       )}
     </div>

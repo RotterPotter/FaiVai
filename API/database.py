@@ -1,5 +1,6 @@
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from sqlalchemy import create_engine
+from config import settings
 
 # Base for models
 class Base(DeclarativeBase):
@@ -13,7 +14,7 @@ def connect():
   global DBSession
 
   # Engine
-  db_engine = create_engine("sqlite:///database.db", echo=True)
+  db_engine = create_engine(settings.DATABASE_URL, echo=True)
 
   # Create all tables stored in base metadata 
   Base.metadata.drop_all(bind=db_engine)

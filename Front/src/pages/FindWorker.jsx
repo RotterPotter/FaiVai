@@ -6,7 +6,7 @@ import Filter from "../components/Filter";
 export default function FindWorker() {
   const searchFilters = [<Filter key="1" name="Category" />];
   return (
-    <div className="flex flex-col justify-center gap-5 items-center mt-[80px]">
+    <div className="flex flex-col justify-center gap-5 items-center mt-[100px]">
       <p className="text-center text-xl sm:text-3xl">
         Find Your Worker <div className="text-green-500">Without Stress</div>
       </p>

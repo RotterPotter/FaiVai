@@ -4,13 +4,15 @@ import Menu from "./Menu.jsx";
 import FindWJ from "./FindWJ.jsx";
 import { Link } from "react-router-dom";
 
+import Logout from "./Logout.jsx";
+
 export default function Navbar() {
+  // useEffect(() => {
+  //   localStorage.removeItem('access_token');
+  // }, []);
+
   const [isScrolled, setIsScrolled] = useState(false);
-  const menuItems = [
-    { linkTo: "/", name: "Home" },
-    { linkTo: "/", name: "About" },
-    { linkTo: "/login", name: "Login"}
-  ];
+  const menuItems = [<Logout />];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,15 +34,15 @@ export default function Navbar() {
         isScrolled ? "bg-gray-200" : "bg-white"
       }`}
     >
-      <Link to={'/'} className="text-2xl text-green-600 font-bold">Fai&Vai</Link>
+      <Link to={"/"} className="text-2xl text-green-600 font-bold">
+        Fai&Vai
+      </Link>
       <FindWJ />
       <div className="hidden sm:inline-flex gap-4 items-center">
         <LanguageSVG />
-        <Menu menuItems={menuItems} />
+        <Menu></Menu>
       </div>
-      <div className="sm:hidden flex justify-center items-center">
-        <Menu menuItems={menuItems} />
-      </div>
+      <div className="sm:hidden flex justify-center items-center"></div>
     </div>
   );
 }
