@@ -1,14 +1,17 @@
-import { Link, useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
-import React, { useState, useContext } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../../context/UserContext";
 
-export default function LogIn() {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-  const [token, setToken] = useContext(UserContext);
   const [errors, setErrors] = useState({});
   const [response, setResponse] = useState({});
+  const [token, setToken] = useContext(UserContext);
+  const navigate = useNavigate();
 
   const login = async () => {
     const requestOptions = {
@@ -33,7 +36,6 @@ export default function LogIn() {
     if (response.ok) {
       const data = await response.json();
       setToken(data.access_token);
-      console.log(token);
       navigate("/");
     } else {
       const errorData = await response.json();
@@ -41,7 +43,7 @@ export default function LogIn() {
     }
   };
 
-  const handleVerifyCLick = async () => {
+  const sendVerifyEmail = async () => {
     const response = await fetch("http://localhost:8000/verify/email/get", {
       method: "POST",
       headers: {
@@ -57,6 +59,10 @@ export default function LogIn() {
     } else {
       console.error("Email not sent");
     }
+  };
+
+  const handleResetClick = () => {
+    navigate("/login/sendcode");
   };
 
   const handleInvalid = (e) => {
@@ -81,9 +87,10 @@ export default function LogIn() {
           e.preventDefault();
           login();
         }}
-        className="flex flex-col items-center w-full sm:max-w-[500px] space-y-3 border border-black/15 shadow-2xl px-20 py-9 rounded-3xl -mt-24"
+        className="flex flex-col relative items-center w-full sm:max-w-[500px] space-y-3 border border-black/15 shadow-2xl px-20 py-9 rounded-3xl -mt-24"
       >
-        <span className="text-2xl font-medium mb-4">Login</span>
+        <span className="text-2xl font-medium pb-8">Login</span>
+
         <div className="w-full">
           <input
             required
@@ -97,10 +104,10 @@ export default function LogIn() {
             onInput={handleInput}
           />
           {response.status === 423 && (
-            <div className="flex justify-between w-[300px] px-5 pt-1 ">
+            <div className="flex justify-between w-[300px] px-5">
               <span className="text-red-500">Email not verified</span>
-              <button type="button" onClick={handleVerifyCLick}>
-                Send email
+              <button type="button" onClick={sendVerifyEmail}>
+                Send email again
               </button>
             </div>
           )}
@@ -121,6 +128,7 @@ export default function LogIn() {
             <span className="text-red-500">{errors.password}</span>
           )}
         </div>
+
         <button
           type="submit"
           className={`w-full h-[50px] rounded-full p-4 text-white text-center shadow-lg ${
@@ -132,12 +140,24 @@ export default function LogIn() {
         >
           Login
         </button>
-        <span className="pt-2">
-          Haven't got any account?{" "}
-          <Link to={"/signup"} className="text-green-500">
-            Sign up
-          </Link>
-        </span>
+        <div className="flex flex-col text-left pt-2 gap-1">
+          <span className="">
+            Haven't got any account?{" "}
+            <Link to={"/signup"} className="text-green-500">
+              Sign up
+            </Link>
+          </span>
+          <span className="">
+            Forgot your password?{" "}
+            <button
+              type="button"
+              onClick={handleResetClick}
+              className="text-green-500"
+            >
+              Reset
+            </button>
+          </span>
+        </div>
       </form>
     </div>
   );

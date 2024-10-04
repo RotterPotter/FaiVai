@@ -13,6 +13,11 @@ class UserCreate(User):
 class UserEmail(BaseModel):
   email:str
 
+class EmailPassword(UserEmail):
+  password: str
+  
+class EmailCode(UserEmail):
+  code: str
 
 class Token(BaseModel):
   access_token:str

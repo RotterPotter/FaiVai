@@ -19,3 +19,9 @@ class TokenBlacklist(Base):
   token: orm.Mapped[str] = orm.mapped_column(primary_key=True, index=True)
   blacklisted_on: orm.Mapped[datetime] = orm.mapped_column(default=datetime.utcnow)
   expires_at: orm.Mapped[datetime]
+
+class EmailCode(Base):
+  __tablename__ = 'email_codes'
+
+  email: orm.Mapped[str] = orm.mapped_column(primary_key=True)
+  code: orm.Mapped[str]

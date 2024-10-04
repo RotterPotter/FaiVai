@@ -13,6 +13,8 @@ from config import settings
 from jinja2 import Template
 from email.mime.text import MIMEText
 import smtplib
+import random
+import string
 
 
 SECRET_KEY = settings.SECRET_KEY
@@ -100,19 +102,42 @@ def create_email_token(data:dict,
   return encoded_jwt
 
 VERIFICATION_EMAIL_TEMPLATE_PATH = 'auth/templates/verification_email.html'
-async def send_verification_email(email: str):
-        email_token = create_email_token({'sub': email, 'type': 'email_verification'}, expires_delta=timedelta(days=1))
-
+RESET_PASSWORD_TEMPLATE_PATH = 'auth/templates/reset_password.html'
+async def send_email(email: str, db_session:Session, type:str='email_verification'):
+        if type == 'email_verification':
+          token = create_email_token({'sub': email, 'type': 'email_verification'}, expires_delta=timedelta(days=1))
+        if type == 'password_reset':
+          code = create_email_code()
+          
+          delete_email_code(email, db_session)
+          response = save_email_code(email, code, db_session)
+          if response != True:
+              raise HTTPException(
+                  status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                  detail=f"Could not save email code : {response} "
+              )
+        
         sender_email = settings.EMAIL_SENDER
         sender_password = settings.EMAIL_PASSWORD
         recipient_email = email
-        with open(VERIFICATION_EMAIL_TEMPLATE_PATH, 'r') as f:
+
+
+
+        if type == 'email_verification':
+          template_path = VERIFICATION_EMAIL_TEMPLATE_PATH
+        elif type == 'password_reset':
+          template_path = RESET_PASSWORD_TEMPLATE_PATH
+
+        with open(template_path, 'r') as f:
             template = Template(f.read())
         context = {
             'subject': 'Fai&Vai: Email Verification',
             'body': 'This is an email sent from Python using an HTML template and the Gmail SMTP server.'
         }
-        html = template.render(context, url=f'http://localhost:8000/verify/email/confirm?token={email_token}')
+        if type == 'email_verification':
+          html = template.render(context, url=f'http://localhost:8000/verify/email/confirm?token={token}')
+        elif type == 'password_reset':
+           html = template.render(context, code=code)
         html_message = MIMEText(html, 'html')
         html_message['Subject'] = context['subject']
         html_message['From'] = sender_email
@@ -122,6 +147,42 @@ async def send_verification_email(email: str):
             server.login(sender_email, sender_password)
             server.sendmail(sender_email, recipient_email, html_message.as_string())
 
+async def validate_token(token:str, type:str='email_verification',db_session: Session = Depends(database.get_db)) -> bool:
+  try:
+    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    if payload.get('type') == type:
+      email = payload.get('sub')
+      user = db_session.query(auth.models.User).filter_by(email=email).first()
+      if user:
+        user.email_verified = True
+        db_session.commit()
+        return True
+    return False
+  except JWTError:
+    return False
+
+def create_email_code() -> str:
+    random_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    return random_code
+
+def delete_email_code(email, db_session: Session = Depends(database.get_db)):
+  try:  
+    email_code = db_session.query(auth.models.EmailCode).filter_by(email=email).first()
+    db_session.delete(email_code)
+    db_session.commit()
+    return True
+  except:
+     return False
+
+def save_email_code(email:str, code:str, db_session: Session = Depends(database.get_db)):
+    try:
+      new_email_code = auth.models.EmailCode(email=email, code=code)
+      db_session.add(new_email_code)
+      db_session.commit()
+      return True
+    except Exception as e:
+      return e
+    
 async def validate_email_token(token:str, db_session: Session = Depends(database.get_db)) -> bool:
   try:
     payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])

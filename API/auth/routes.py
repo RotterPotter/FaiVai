@@ -48,7 +48,7 @@ async def register_user(
   db_session.add(user_model)
   db_session.commit()
 
-  await service.send_verification_email(user_schema.email)
+  await service.send_email(user_schema.email, db_session)
 
   return {'msg': "User registered successfully"}
 
@@ -120,9 +120,70 @@ async def send_verification_email(
       status_code=status.HTTP_400_BAD_REQUEST,
       detail="Email not found"
     )
-  await service.send_verification_email(user.email)
+  await service.send_email(user.email, db_session)
   return {"msg": "Verification email sent"}
 
+@router.post('/reset/password/get', status_code=status.HTTP_200_OK)
+async def send_reset_password_email(
+  email_schema:auth.schemas.UserEmail,
+  db_session: Session = Depends(database.get_db)
+):
+  user = db_session.query(auth.models.User).filter_by(email=email_schema.email).first()
+  if not user:
+    raise HTTPException(
+      status_code=status.HTTP_400_BAD_REQUEST,
+      detail="Email not found"
+    )
+  await service.send_email(user.email, type='password_reset', db_session=db_session)
+  return {"msg": "Reset password email sent"}
+
+@router.post('/verify/email_code', status_code=status.HTTP_200_OK)
+async def verify_email_code(
+  code_schema:auth.schemas.EmailCode,
+  db_session: Session = Depends(database.get_db)
+):
+  email_code = db_session.query(auth.models.EmailCode).filter_by(
+    email=code_schema.email,
+    code=code_schema.code
+  ).first()
+  
+  if not email_code:
+    raise HTTPException(
+      status_code=status.HTTP_406_NOT_ACCEPTABLE,
+      detail="Invalid code"
+    )
+
+  token = service.create_access_token(data={"sub":code_schema.code})
+  return token
+
+@router.post('/reset/password/update')
+async def reset_password_done(
+  email_pwd_schema: auth.schemas.EmailPassword,
+  token:str,
+  # token:str = Depends(oauth2_scheme),
+  db_session: Session = Depends(database.get_db)
+): # Blacklists code_token when resetting done
+  payload = service.decode_access_token(token)
+  expires_at = payload.get("exp")
+  if not expires_at:
+    raise HTTPException(
+      status_code=status.HTTP_400_BAD_REQUEST,
+      detail="Invalid token"
+    )
+  
+  service.blacklist_token(db_session, token, expires_at)
+  
+  user = db_session.query(auth.models.User).filter_by(email=email_pwd_schema.email).first()
+  if not user:
+      raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND,
+          detail="User not found"
+      )
+  user.hashed_password = service.hash_password(email_pwd_schema.password)
+  db_session.commit()
+
+  return {"msg": "Success"}
+  
 @router.get(
   '/verify/email/confirm',
   status_code=status.HTTP_200_OK
@@ -137,6 +198,24 @@ async def verify_email(
       status_code=status.HTTP_400_BAD_REQUEST,
       detail="Invalid token"
     )
+
+
+# @router.post('/reset/password/done')
+# async def reset_password_done(
+#   token:str = Depends(oauth2_scheme),
+#   db_session: Session = Depends(database.get_db)
+# ): # Blacklists code_token when resetting done
+#   payload = service.decode_access_token(token)
+#   expires_at = payload.get("exp")
+#   if not expires_at:
+#     raise HTTPException(
+#       status_code=status.HTTP_400_BAD_REQUEST,
+#       detail="Invalid token"
+#     )
+  
+#   service.blacklist_token(db_session, token, expires_at)
+#   return {"msg": "Token successfully added in black list"}
+
 
 
 """
