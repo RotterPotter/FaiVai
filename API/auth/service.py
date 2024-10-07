@@ -135,7 +135,7 @@ async def send_email(email: str, db_session:Session, type:str='email_verificatio
             'body': 'This is an email sent from Python using an HTML template and the Gmail SMTP server.'
         }
         if type == 'email_verification':
-          html = template.render(context, url=f'http://localhost:8000/verify/email/confirm?token={token}')
+          html = template.render(context, url=f'http://localhost:5173/login/emailverified?token={token}')
         elif type == 'password_reset':
            html = template.render(context, code=code)
         html_message = MIMEText(html, 'html')

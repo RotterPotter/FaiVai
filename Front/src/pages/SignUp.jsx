@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import Spinner from "../components/Spinner";
+import EyeSVG from "../assets/SVG/EyeSVG";
 
 export default function SignUp() {
   const [firstname, setFirstname] = useState("");
@@ -9,10 +11,24 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
-  const [isTypingPassword, setIsTypingPassword] = useState(false);
+  const [isLoading, setIsLoadng] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const passwordInputRef = useRef(null);
+  const confirmPasswordInputRef = useRef(null);
   const navigate = useNavigate();
 
   const register = async () => {
+    if (!isPasswordStrong(password)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        password:
+          "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.",
+      }));
+      return;
+    }
+
+    setIsLoadng(true);
+
     try {
       const response = await fetch("http://localhost:8000/register", {
         method: "POST",
@@ -46,6 +62,8 @@ export default function SignUp() {
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred. Please try again.");
+    } finally {
+      setIsLoadng(false);
     }
   };
 
@@ -90,15 +108,22 @@ export default function SignUp() {
   const passwordsMatch = password === confirmPassword;
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className=" flex justify-center items-center h-screen">
       <form
         action="POST"
-        className="flex flex-col items-center w-full sm:max-w-[500px] space-y-3 border border-black/15 shadow-2xl px-20 py-9 rounded-3xl -mt-24"
+        className={`relative flex flex-col items-center w-full sm:max-w-[500px] space-y-3 border border-black/15 shadow-2xl px-20 py-9 rounded-3xl -mt-24 ${
+          isLoading ? "opacity-100" : ""
+        }`}
         onSubmit={(e) => {
           e.preventDefault();
           register();
         }}
       >
+        {isLoading && (
+          <div className="absolute inset-0 m-auto flex shadow-xl justify-center items-center bg-white/70 rounded-3xl ">
+            <Spinner></Spinner>
+          </div>
+        )}
         <span className="text-2xl font-medium mb-4">Sign Up</span>
         <div className="w-full">
           <input
@@ -147,43 +172,73 @@ export default function SignUp() {
           {errors.email && <span className="text-red-500">{errors.email}</span>}
         </div>
         <div className="w-full">
-          <input
-            required
-            type="password"
-            name="password"
-            placeholder="Password"
-            className="input-reset w-full h-[50px] rounded-full p-4"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setIsTypingPassword(true);
-            }}
-            onBlur={() => setIsTypingPassword(false)}
-            onInvalid={handleInvalid}
-            onInput={handleInput}
-          />
+          <div className="w-full relative">
+            <input
+              required
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              className="input-reset w-full h-[50px] rounded-full p-4"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              onInvalid={handleInvalid}
+              onInput={handleInput}
+              ref={passwordInputRef}
+            />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 px-3 flex items-center"
+              onClick={() => {
+                setShowPassword(!showPassword);
+                setTimeout(() => {
+                  const input = passwordInputRef.current;
+                  input.focus();
+                  const length = input.value.length;
+                  input.setSelectionRange(length, length); // Set cursor position to the end
+                }, 0);
+              }}
+            >
+              <EyeSVG show={showPassword} />
+            </button>
+          </div>
+
           {errors.password && (
             <span className="text-red-500">{errors.password}</span>
           )}
-          {!isPasswordStrong(password) && isTypingPassword && (
-            <span className="text-red-500">
-              Password must be at least 8 characters long and include uppercase,
-              lowercase, number, and special character.
-            </span>
-          )}
         </div>
         <div className="w-full">
-          <input
-            required
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            className="input-reset w-full h-[50px] rounded-full p-4"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            onInvalid={handleInvalid}
-            onInput={handleInput}
-          />
+          <div className="w-full relative">
+            <input
+              required
+              type={showPassword ? "text" : "password"}
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              className="input-reset w-full h-[50px] rounded-full p-4"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              onInvalid={handleInvalid}
+              onInput={handleInput}
+              ref={confirmPasswordInputRef}
+            />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 px-3 flex items-center"
+              onClick={() => {
+                setShowPassword(!showPassword);
+                setTimeout(() => {
+                  const input = confirmPasswordInputRef.current;
+                  input.focus();
+                  const length = input.value.length;
+                  input.setSelectionRange(length, length); // Set cursor position to the end
+                }, 0);
+              }}
+            >
+              <EyeSVG show={showPassword} />
+            </button>
+          </div>
+
           {errors.confirmPassword && (
             <span className="text-red-500">{errors.confirmPassword}</span>
           )}
@@ -193,10 +248,8 @@ export default function SignUp() {
         </div>
         <button
           type="submit"
-          className={`btn-primary w-full h-[50px] rounded-full p-4 text-white ${
-            isFormValid() ? "bg-green-500" : "bg-green-500 cursor-not-allowed"
-          }`}
-          disabled={!isFormValid()}
+          className={` shadow-xl active:shadow-none btn-primary w-full h-[50px] rounded-full p-4 text-white bg-green-500`}
+          // disabled={!isFormValid()}
         >
           Register
         </button>
