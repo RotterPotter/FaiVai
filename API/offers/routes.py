@@ -80,6 +80,9 @@ async def delete_offer(offer_id: int, db_session: Session = Depends(database.get
 async def create_fake_data(quantity:int, owner_id:int, db_session: Session = Depends(database.get_db)):
   for _ in range(quantity):
     offer = offers.models.Offer(
+      owner_name=fake.name(),
+      owner_rating=fake.random_int(min=0, max=5),
+      reviews_count=fake.random_int(min=0, max=100),
       title=fake.sentence(),
       description=fake.text(),
       location=fake.city(),
