@@ -1,11 +1,13 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 class Offer(BaseModel):
+  owner_id: int
   title: str
   category: str
   location: str
-  datetime: str
+  datetime: datetime
   description: str
-  reward: int
+  price: int
   class Config:
     orm_mode = True

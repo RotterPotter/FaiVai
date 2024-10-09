@@ -17,7 +17,7 @@ export default function FindJobs() {
       <Search searchFilters={searchFilters}></Search>
       <div className="flex justify-between items-center w-full  max-w-[400px] sm:max-w-[600px] -mt-1">
         <FirstButton name="Map"></FirstButton>
-        <FirstButton name="Catalog"></FirstButton>
+        <FirstButton name="Catalog" navigateTo={"offers/catalog"}></FirstButton>
         <FirstButton name="Messages"></FirstButton>
       </div>
       {token && <div className="text-green-500 text-3xl mt-5">Logged In</div>}

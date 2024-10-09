@@ -61,6 +61,10 @@ export default function Login() {
       setIsEmailNotVerified(true);
       setTimer(0); // Reset the timer
       setIsLoading(false);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: "Verify email",
+      }));
       return;
     }
 
@@ -149,9 +153,28 @@ export default function Login() {
             onInvalid={handleInvalid}
             onInput={handleInput}
           />
-          {errors.email && (
-            <span className="text-red-500 px-5">{errors.email}</span>
-          )}
+          <div className="flex w-full px-5 pt ">
+            {errors.email && (
+              <span className="text-red-500 w-full text-left flex">
+                {errors.email}
+              </span>
+            )}
+            {isEmailNotVerified && (
+              <div className="flex w-full justify-center items-center gap-2 ">
+                <button
+                  type="button"
+                  onClick={sendVerifyEmail}
+                  disabled={timer > 0}
+                  className={`${
+                    timer > 0 ? "text-black/30" : "text-black"
+                  } flex w-full text-left`}
+                >
+                  Send code again
+                </button>
+                {timer > 0 && <span>{timer}</span>}
+              </div>
+            )}
+          </div>
         </div>
         <div className="w-full">
           <div className="w-full relative">
@@ -189,19 +212,6 @@ export default function Login() {
             <span className="text-red-500 px-5">{errors.password}</span>
           )}
         </div>
-        {isEmailNotVerified && (
-          <div className="flex w-full justify-end gap-5 px-5">
-            <button
-              type="button"
-              onClick={sendVerifyEmail}
-              disabled={timer > 0}
-              className={`${timer > 0 ? "text-black/30" : "text-black"}`}
-            >
-              Send code again
-            </button>
-            {timer > 0 && <span>{timer}</span>}
-          </div>
-        )}
 
         <button
           type="submit"

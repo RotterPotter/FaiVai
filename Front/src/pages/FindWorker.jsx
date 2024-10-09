@@ -12,7 +12,7 @@ export default function FindWorker() {
       </p>
       <Search searchFilters={searchFilters}></Search>
       <div className="flex justify-between items-center w-full  max-w-[400px] sm:max-w-[600px] -mt-1">
-        <FirstButton name="Post Offer"></FirstButton>
+        <FirstButton navigateTo="/offers/post" name="Post Offer"></FirstButton>
         <FirstButton name="Your Offers"></FirstButton>
         <FirstButton name="Messages"></FirstButton>
       </div>

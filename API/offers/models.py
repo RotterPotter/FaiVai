@@ -8,6 +8,7 @@ class Offer(Base):
 
   
   id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
+  owner_id: orm.Mapped[int]
   title: orm.Mapped[str]
   category: orm.Mapped[str]
   location: orm.Mapped[str]

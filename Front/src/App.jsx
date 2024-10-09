@@ -14,6 +14,8 @@ import SendCode from "./pages/Login/SendCode.jsx";
 import VerifyCode from "./pages/Login/VerifyCode.jsx";
 import NewPwd from "./pages/Login/NewPwd.jsx";
 import EmailVerified from "./pages/EmailVerified.jsx";
+import PostOffer from "./pages/PostOffer.jsx";
+import OffersCatalog from "./pages/OffersCatalog.jsx";
 
 function App() {
   const location = useLocation();
@@ -31,6 +33,8 @@ function App() {
         <Route path="/login/verifycode" element={<VerifyCode />} />
         <Route path="/login/newpwd" element={<NewPwd />} />
         <Route path="/login/emailverified" element={<EmailVerified />} />
+        <Route path="/offers/post" element={<PostOffer />} />
+        <Route path="/offers/catalog" element={<OffersCatalog />} />
       </Routes>
     </div>
   );
