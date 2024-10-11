@@ -3,21 +3,28 @@ import { useState } from "react";
 import Spinner from "../components/Spinner";
 import ArrowSVG from "../assets/SVG/ArrowSVG";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function PostOffer() {
   const [isLoading, setIsLoading] = useState(false);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(null);
   const [errors, setErrors] = useState({});
   const [category, setCategory] = useState(null);
   const [isCategorySelecting, setIsCategorySelecting] = useState(false);
   const [location, setLocation] = useState(null);
   const [isLocationSelecting, setIsLocationSelecting] = useState(false);
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [currency, setCurrency] = useState("EUR (€)");
+  const [description, setDescription] = useState(null);
+  const [price, setPrice] = useState(null);
+  const [currency, setCurrency] = useState("USDT CRYPTO");
   const [isCurrencySelecting, setIsCurrencySelecting] = useState(false);
-  const [owner_id, setOwnerId] = useState("1");
   const navigate = useNavigate();
+
+  const [categories, setCategories] = useState(["cleaning", "gardening"]);
+
+  const [owner_id, setOwnerId] = useState("");
+  const [owner_name, setOwnerName] = useState("");
+  const [owner_rating, setOwnerRating] = useState("");
+  const [reviews_count, setReviewsCount] = useState("");
 
   const [datetime, setDatetime] = useState("");
 
@@ -44,6 +51,33 @@ export default function PostOffer() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const getUser = async () => {
+    const response = await fetch("http://localhost:8000/users/me", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setOwnerId(data.id);
+      setOwnerName(data.firstname + " " + data.lastname);
+      setOwnerRating(data.rating);
+      setReviewsCount(data.reviews_count);
+
+      console.log(data);
+      console.log(owner_id);
+    } else {
+      console.error("Error");
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
   const createOffer = async () => {
     if (validateForm()) {
       setIsLoading(true);
@@ -55,6 +89,9 @@ export default function PostOffer() {
           },
           body: JSON.stringify({
             owner_id,
+            owner_name,
+            owner_rating,
+            reviews_count,
             title,
             category,
             location,
@@ -84,7 +121,7 @@ export default function PostOffer() {
           e.preventDefault();
           createOffer();
         }}
-        className={`relative flex flex-col items-center w-full sm:max-w-[500px] space-y-3 border border-black/15 shadow-2xl px-20 py-9 rounded-3xl -mt-24 ${
+        className={`relative flex flex-col items-center w-full sm:max-w-[500px] space-y-3 border border-black/15 shadow-2xl px-20 py-9 rounded-3xl  ${
           isLoading ? "opacity-100" : ""
         }`}
       >
@@ -113,6 +150,7 @@ export default function PostOffer() {
         <div className="w-full">
           <button
             type="button"
+            name="category"
             onClick={() => setIsCategorySelecting(!isCategorySelecting)}
             className={`" w-full h-[50px] relative rounded-full p-4  text-left flex justify-between items-center ${
               isCategorySelecting
@@ -179,6 +217,7 @@ export default function PostOffer() {
         <div className="w-full">
           <button
             type="button"
+            name="location"
             onClick={() => setIsLocationSelecting(!isLocationSelecting)}
             className={`" w-full h-[50px] relative rounded-full p-4  text-left flex justify-between items-center ${
               isLocationSelecting
@@ -263,6 +302,7 @@ export default function PostOffer() {
           <textarea
             required
             placeholder="Description"
+            name="description"
             className={`input-reset w-full h-[150px] rounded-3xl p-4 resize-none ${
               description ? "text-black" : "text-black/50"
             }`}
@@ -271,6 +311,9 @@ export default function PostOffer() {
             onInvalid={handleInvalid}
             onInput={handleInput}
           />
+          {errors.description && (
+            <span className="text-red-500 px-5">{errors.description}</span>
+          )}
         </div>
         <div className="w-full flex gap-2">
           <input

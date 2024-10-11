@@ -13,6 +13,11 @@ class UserCreate(User):
 class UserEmail(BaseModel):
   email:str
 
+class UserInfo(User):
+  id:int
+  rating:float
+  reviews_count:int
+
 class EmailPassword(UserEmail):
   password: str
   

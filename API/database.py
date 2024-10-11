@@ -23,6 +23,16 @@ def connect():
   # Bind engine to the class of sessions
   DBSession = sessionmaker(bind=db_engine)
 
+  #  Create admin user
+  from auth.models import User
+  from auth.service import hash_password 
+  from datetime import datetime
+  db_session = DBSession()
+  admin = User( email='admin@gmail.com', hashed_password=hash_password('admin'), email_verified=True, firstname='Admin', lastname='Admin', rating=5.0, reviews_count=0)
+  db_session.add(admin)
+  db_session.commit()
+
+
 def get_db():
   if DBSession is None:
     connect()

@@ -5,3 +5,22 @@
 .input-reset {
   @apply appearance-none outline-none border border-black/70 focus:border-2 focus:border-green-500;
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 12px;
+  border-radius: 30px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

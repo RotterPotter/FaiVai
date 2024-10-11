@@ -22,7 +22,7 @@ function App() {
   const hideNavbarRoutes = ["/login/emailverified"];
 
   return (
-    <div className="mx-10">
+    <div className="mx-10 font">
       {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
       <Routes>
         <Route path="/" element={<FindJobs />} />

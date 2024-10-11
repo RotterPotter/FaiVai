@@ -7,13 +7,30 @@ from sqlalchemy import  or_
 from typing import Union
 from datetime import datetime
 from faker import Faker
+import auth.models 
+import auth.service 
 
 router = APIRouter(prefix='/offers', tags=['offers'])
 fake = Faker()
 
 @router.post('/create', status_code=status.HTTP_201_CREATED)
-async def create_offer(offer_schema: offers.schemas.Offer, db_session: Session = Depends(database.get_db)):
-  offer = offers.models.Offer(**offer_schema.dict())
+async def create_offer(
+  offer_schema: offers.schemas.OfferCreate,
+  db_session: Session = Depends(database.get_db)
+):
+  offer = offers.models.Offer(
+    owner_id=offer_schema.owner_id,
+    owner_name=offer_schema.owner_name,
+    owner_rating=offer_schema.owner_rating,
+    reviews_count=offer_schema.reviews_count,
+    title=offer_schema.title,
+    category=offer_schema.category,
+    location=offer_schema.location,
+    datetime=offer_schema.datetime,
+    description=offer_schema.description,
+    price=int(offer_schema.price),
+    created_at=datetime.now()
+  )
   db_session.add(offer)
   db_session.commit()
   return {'msg': 'Offer created successfully'}
@@ -36,42 +53,42 @@ async def search_offers(query: str, db_session: Session = Depends(database.get_d
     ).all()
     return offers_all
 
-@router.get('/search/column', status_code=status.HTTP_200_OK)
-async def search_offers(query: str, column: str, limit: int = 10, offset: int = 0, db_session: Session = Depends(database.get_db)):
-    # Validate the column name to prevent SQL injection
-    valid_columns = ['title', 'description', 'price', 'category', 'datetime']
-    if column not in valid_columns:
-        raise HTTPException(status_code=400, detail="Invalid column name")
+# @router.get('/search/column', status_code=status.HTTP_200_OK)
+# async def search_offers(query: str, column: str, limit: int = 10, offset: int = 0, db_session: Session = Depends(database.get_db)):
+#     # Validate the column name to prevent SQL injection
+#     valid_columns = ['title', 'description', 'price', 'category', 'datetime']
+#     if column not in valid_columns:
+#         raise HTTPException(status_code=400, detail="Invalid column name")
 
-    # Dynamically build the filter condition
-    filter_condition = getattr(offers.models.Offer, column).ilike(f'%{query}%')
+#     # Dynamically build the filter condition
+#     filter_condition = getattr(offers.models.Offer, column).ilike(f'%{query}%')
     
-    # Query the database with pagination
-    offers_all = db_session.query(offers.models.Offer).filter(
-        filter_condition
-    ).limit(limit).offset(offset).all()
+#     # Query the database with pagination
+#     offers_all = db_session.query(offers.models.Offer).filter(
+#         filter_condition
+#     ).limit(limit).offset(offset).all()
     
-    return offers_all
+#     return offers_all
 
-@router.get('/{offer_id}', status_code=status.HTTP_200_OK)
-async def get_offer(offer_id: int, db_session: Session = Depends(database.get_db)):
-  offer = db_session.query(offers.models.Offer).filter_by(id=offer_id).first()
-  return offer
+# @router.get('/{offer_id}', status_code=status.HTTP_200_OK)
+# async def get_offer(offer_id: int, db_session: Session = Depends(database.get_db)):
+#   offer = db_session.query(offers.models.Offer).filter_by(id=offer_id).first()
+#   return offer
 
-@router.put('/{offer_id}', status_code=status.HTTP_200_OK)
-async def update_offer(offer_id: int, offer_schema: offers.schemas.Offer, db_session: Session = Depends(database.get_db)):
-  offer = db_session.query(offers.models.Offer).filter_by(id=offer_id).first()
-  for key, value in offer_schema.dict().items():
-    setattr(offer, key, value)
-  db_session.commit()
-  return {'msg': 'Offer updated successfully'}
+# @router.put('/{offer_id}', status_code=status.HTTP_200_OK)
+# async def update_offer(offer_id: int, offer_schema: offers.schemas.OfferUpdate, db_session: Session = Depends(database.get_db)):
+#   offer = db_session.query(offers.models.Offer).filter_by(id=offer_id).first()
+#   for key, value in offer_schema.dict().items():
+#     setattr(offer, key, value)
+#   db_session.commit()
+#   return {'msg': 'Offer updated successfully'}
 
-@router.delete('/{offer_id}', status_code=status.HTTP_200_OK)
-async def delete_offer(offer_id: int, db_session: Session = Depends(database.get_db)):
-  offer = db_session.query(offers.models.Offer).filter_by(id=offer_id).first()
-  db_session.delete(offer)
-  db_session.commit()
-  return {'msg': 'Offer deleted successfully'}
+# @router.delete('/{offer_id}', status_code=status.HTTP_200_OK)
+# async def delete_offer(offer_id: int, db_session: Session = Depends(database.get_db)):
+#   offer = db_session.query(offers.models.Offer).filter_by(id=offer_id).first()
+#   db_session.delete(offer)
+#   db_session.commit()
+#   return {'msg': 'Offer deleted successfully'}
 
 
 

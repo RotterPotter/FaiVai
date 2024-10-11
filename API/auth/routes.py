@@ -101,7 +101,7 @@ async def logout(
 
 @router.get(
   '/users/me',
-  response_model=auth.schemas.User
+  response_model=auth.schemas.UserInfo,
 )
 async def read_users_me(
   current_user: auth.models.User = Depends(service.get_current_user)
