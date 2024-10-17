@@ -1,6 +1,10 @@
 import sqlalchemy.orm as orm
 from datetime import datetime
 from database import Base
+import pytz
+
+# Define your local timezone
+LOCAL_TIMEZONE = pytz.timezone('Europe/Rome')  # Replace with your local timezone
 
 class Offer(Base):
     __tablename__ = "offers"
@@ -16,4 +20,5 @@ class Offer(Base):
     datetime: orm.Mapped[datetime]
     description: orm.Mapped[str]
     price: orm.Mapped[float]
-    created_at: orm.Mapped[datetime] = orm.mapped_column(default=datetime.utcnow)
+    currency: orm.Mapped[str]
+    created_at: orm.Mapped[datetime] = orm.mapped_column(default=lambda: datetime.now(LOCAL_TIMEZONE))

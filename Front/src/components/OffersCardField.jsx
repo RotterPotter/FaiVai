@@ -1,20 +1,52 @@
 import React from "react";
+import LocationSVG from "../assets/SVG/LocationSVG";
+import DateSVG from "../assets/SVG/DateSVG";
+import ClockSVG from "../assets/SVG/ClockSVG";
+import MoneySVG from "../assets/SVG/MoneySVG";
 
-export default function OffersCardField({ name, value }) {
-  const n = 14;
-  if (value.length > n) {
-    if (value[n - 1] === " ") {
-      value = value.slice(0, n - 1) + "...";
-    } else {
-      value = value.slice(0, n) + "...";
+export default function OffersCardField({
+  name,
+  value,
+  className,
+  shortify = true,
+}) {
+  const n = 17;
+
+  if (shortify) {
+    if (value.length > n) {
+      if (value[n - 1] === " ") {
+        value = value.slice(0, n - 1) + "...";
+      } else {
+        value = value.slice(0, n) + "...";
+      }
     }
   }
 
   return (
-    <div className="w-full px-2">
-      <p className="px-1 text-left">
-        <span className="text-gray-500 ">{name}: </span>
-        {value}
+    <div className={`w-full px-4 ${className} text-black/70 `}>
+      <p className="text-left">
+        <span
+          className={` flex w-full gap-1 ${
+            name == "Location"
+              ? "italic"
+              : name == "Title"
+              ? "text-black/90"
+              : ""
+          }`}
+        >
+          {name == "Location" ? (
+            <LocationSVG></LocationSVG>
+          ) : name == "Date" ? (
+            <DateSVG />
+          ) : name == "Time" ? (
+            <ClockSVG />
+          ) : name == "Price" ? (
+            <MoneySVG />
+          ) : (
+            ""
+          )}
+          {value}
+        </span>
       </p>
     </div>
   );

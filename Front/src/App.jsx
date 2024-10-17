@@ -16,13 +16,15 @@ import NewPwd from "./pages/Login/NewPwd.jsx";
 import EmailVerified from "./pages/EmailVerified.jsx";
 import PostOffer from "./pages/PostOffer.jsx";
 import OffersCatalog from "./pages/OffersCatalog.jsx";
+import OfferDetails from "./pages/OfferDetails.jsx";
+import TestOfferDetails from "./pages/TestOfferDetails.jsx";
 
 function App() {
   const location = useLocation();
   const hideNavbarRoutes = ["/login/emailverified"];
 
   return (
-    <div className="mx-10 font">
+    <div className="w-full m-0 p-0 ">
       {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
       <Routes>
         <Route path="/" element={<FindJobs />} />
@@ -35,6 +37,7 @@ function App() {
         <Route path="/login/emailverified" element={<EmailVerified />} />
         <Route path="/offers/post" element={<PostOffer />} />
         <Route path="/offers/catalog" element={<OffersCatalog />} />
+        <Route path="/offers/detail" element={<OfferDetails />} />
       </Routes>
     </div>
   );

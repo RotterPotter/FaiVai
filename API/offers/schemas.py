@@ -13,6 +13,7 @@ class OfferCreate(BaseModel):
     datetime: datetime
     description: Optional[str] = None
     price: float
+    currency: str
 
     class Config:
         orm_mode = True
@@ -29,6 +30,7 @@ class Offer(BaseModel):
     datetime: datetime
     description: Optional[str] = None
     price: float
+    currency: str
     created_at: datetime
 
     class Config:

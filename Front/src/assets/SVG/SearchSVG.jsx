@@ -2,8 +2,8 @@ import React from "react";
 
 export default function Search({ small = false, className = "" }) {
   const dimensions = small
-    ? { width: "20px", height: "18px" }
-    : { width: "30px", height: "30px" };
+    ? { width: "12px", height: "18px" }
+    : { width: "20px", height: "30px" };
   return (
     <svg
       className={className}

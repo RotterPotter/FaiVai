@@ -1,17 +1,57 @@
-import React from "react";
+import React, { useDebugValue } from "react";
 import SearchSVG from "../assets/SVG/SearchSVG";
+import Filter from "./Filter";
+import { useState, useEffect } from "react";
 
-export default function Search({ searchFilters = [] }) {
+export default function Search() {
+  const [openFilter, setOpenFilter] = useState(null);
+  const [location, setLocation] = useState("");
+
   return (
-    <div className="flex gap-3 h-[64px] justify-center items-center text-xs sm:text-base border border-green-600 rounded-full px-5 sm:px-10 py-1 w-full max-w-[1000px]">
-      <SearchSVG className="hidden sm:flex mr-2" />
-      <SearchSVG small={true} className="sm:hidden" />
-      <p className="flex-grow w-auto  border-black text-gray-500 mr-2 sm:mr-4">
-        Type location...
-      </p>
-      {searchFilters.map((item, index) => (
-        <div key={index}>{item}</div>
-      ))}
+    <div className="flex flex-col gap-3 justify-center items-center w-full  max-w-[1000px]">
+      <div className="flex gap-3 h-[54px] justify-center items-center text-xs sm:text-base border sm:px-10 px-3 border-green-600 rounded-full  w-full ">
+        <SearchSVG className="hidden sm:flex mr-2" />
+        <SearchSVG small={true} className="sm:hidden" />
+        <input
+          type="text"
+          name="location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          placeholder="Type location"
+          className="w-full m-0 p-0 outline-none focus:placeholder-transparent"
+        />
+      </div>
     </div>
   );
 }
+
+// const handleFilterClick = (filterName) => {
+//   setOpenFilter(openFilter === filterName ? null : filterName);
+// };
+
+/* <div className="flex flex-row-reverse justify-start gap-10 w-full px-5">
+        <Filter
+          name="Rating"
+          isOpen={openFilter === "Filter 1"}
+          onClick={() => handleFilterClick("Filter 1")}
+          defaultFilter="All"
+        />
+        <Filter
+          name="Category"
+          isOpen={openFilter === "Filter 2"}
+          onClick={() => handleFilterClick("Filter 2")}
+          defaultFilter="All"
+        />
+        <Filter
+          name="Price"
+          isOpen={openFilter === "Filter 3"}
+          onClick={() => handleFilterClick("Filter 3")}
+          defaultFilter="All"
+        />
+        <Filter
+          name="Distance"
+          isOpen={openFilter === "Filter 4"}
+          onClick={() => handleFilterClick("Filter 4")}
+          defaultFilter="All"
+        />
+      </div> */

@@ -7,6 +7,7 @@ export default function Arrow({ small = false, degree = 0 }) {
 
   return (
     <svg
+      className={`transition-transform duration-200 `}
       width={dimensions.width}
       height={dimensions.height}
       viewBox="0 0 20 13"

@@ -15,11 +15,12 @@ export default function PostOffer() {
   const [isLocationSelecting, setIsLocationSelecting] = useState(false);
   const [description, setDescription] = useState(null);
   const [price, setPrice] = useState(null);
-  const [currency, setCurrency] = useState("USDT CRYPTO");
+  const [currency, setCurrency] = useState("$");
   const [isCurrencySelecting, setIsCurrencySelecting] = useState(false);
   const navigate = useNavigate();
+  const [locationSuggestions, setLocationSuggestions] = useState([]);
 
-  const [categories, setCategories] = useState(["cleaning", "gardening"]);
+  const categories = ["cleaning", "gardening", "moving", "painting", "other"];
 
   const [owner_id, setOwnerId] = useState("");
   const [owner_name, setOwnerName] = useState("");
@@ -75,6 +76,9 @@ export default function PostOffer() {
   };
 
   useEffect(() => {
+    if (!localStorage.getItem("access_token")) {
+      navigate("/login");
+    }
     getUser();
   }, []);
 
@@ -98,6 +102,7 @@ export default function PostOffer() {
             datetime,
             description,
             price,
+            currency,
           }),
         });
 
@@ -113,6 +118,12 @@ export default function PostOffer() {
     }
   };
 
+  const suggestLocations = async (string) => {};
+
+  const onChangeLocation = (e) => {
+    setLocation(e.target.value);
+    suggestLocations(e.target.value);
+  };
   return (
     <div className="flex justify-center items-center h-screen">
       <form
@@ -162,121 +173,54 @@ export default function PostOffer() {
           >
             <span>{category || "Select category"}</span>
             <ArrowSVG></ArrowSVG>
-            {isCategorySelecting && (
-              <div className="absolute left-0 top-[50px] w-full max-h-[120px] shadow-2xl flex flex-col bg-white z-50 rounded-lg overflow-y-auto">
+            <div
+              className={`absolute left-0 top-[50px] w-full max-h-[120px] shadow-2xl flex flex-col bg-white z-50 rounded-lg overflow-y-auto transition-opacity duration-200 ${
+                isCategorySelecting
+                  ? "opacity-100"
+                  : "opacity-0 pointer-events-none"
+              }`}
+            >
+              {categories.map((category) => (
                 <button
                   type="button"
                   className="text-left p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => setCategory("Option 1")}
+                  onClick={() => setCategory(category)}
                 >
-                  Option 1
+                  {category}
                 </button>
-                <button
-                  type="button"
-                  className="text-left p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => setCategory("Option 2")}
-                >
-                  Option 2
-                </button>
-                <button
-                  type="button"
-                  className="text-left p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => setCategory("Option 3")}
-                >
-                  Option 3
-                </button>
-                <button
-                  type="button"
-                  className="text-left p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => setCategory("Option 4")}
-                >
-                  Option 4
-                </button>
-                <button
-                  type="button"
-                  className="text-left p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => setCategory("Option 5")}
-                >
-                  Option 5
-                </button>
-                <button
-                  type="button"
-                  className="text-left p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => setCategory("Option 1")}
-                >
-                  Option 6
-                </button>
-              </div>
-            )}
+              ))}
+            </div>
           </button>
 
           {errors.category && (
             <span className="text-red-500 px-5">{errors.category}</span>
           )}
         </div>
-        <div className="w-full">
-          <button
-            type="button"
+        <div className="w-full relative">
+          <input
+            required
+            type="text"
             name="location"
-            onClick={() => setIsLocationSelecting(!isLocationSelecting)}
-            className={`" w-full h-[50px] relative rounded-full p-4  text-left flex justify-between items-center ${
-              isLocationSelecting
-                ? " border-2 border-green-500"
-                : "border border-black/70 "
-            }
-            ${location ? "text-black" : "text-black/50"}
-            `}
+            placeholder="Location"
+            className="input-reset w-full h-[50px] rounded-full p-4 "
+            value={location}
+            onChange={(e) => onChangeLocation(e)}
+            onInvalid={handleInvalid}
+            onInput={handleInput}
+          />
+          <div
+            className={`absolute left-0 top-[50px] w-full max-h-[120px] custom-scrollbar shadow-2xl flex flex-col bg-white z-50 rounded-lg overflow-y-auto`}
           >
-            <span>{location ? location : "Location"}</span>
-            <ArrowSVG></ArrowSVG>
-            {isLocationSelecting && (
-              <div className="absolute left-0 top-[50px] w-full max-h-[120px] shadow-2xl flex flex-col bg-white z-50 rounded-lg overflow-y-auto">
-                <button
-                  type="button"
-                  className="text-left p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => setLocation("Option 1")}
-                >
-                  Option 1
-                </button>
-                <button
-                  type="button"
-                  className="text-left p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => setLocation("Option 2")}
-                >
-                  Option 2
-                </button>
-                <button
-                  type="button"
-                  className="text-left p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => setLocation("Option 3")}
-                >
-                  Option 3
-                </button>
-                <button
-                  type="button"
-                  className="text-left p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => setLocation("Option 4")}
-                >
-                  Option 4
-                </button>
-                <button
-                  type="button"
-                  className="text-left p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => setLocation("Option 5")}
-                >
-                  Option 5
-                </button>
-                <button
-                  type="button"
-                  className="text-left p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => setLocation("Option 1")}
-                >
-                  Option 6
-                </button>
-              </div>
-            )}
-          </button>
-
+            {locationSuggestions.map((location) => (
+              <button
+                type="button"
+                className="text-left p-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => setLocationSuggestions(location)}
+              >
+                {location}
+              </button>
+            ))}
+          </div>
           {errors.location && (
             <span className="text-red-500 px-5">{errors.location}</span>
           )}

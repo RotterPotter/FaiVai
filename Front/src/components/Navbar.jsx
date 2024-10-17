@@ -12,7 +12,6 @@ export default function Navbar() {
   // }, []);
 
   const [isScrolled, setIsScrolled] = useState(false);
-  const menuItems = [<Logout />];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,7 +29,7 @@ export default function Navbar() {
 
   return (
     <div
-      className={`fixed top-0 left-0 right-0 flex justify-between items-center py-4 px-8 xl:px-12 2xl:px-48 h-[60px] shadow-md z-50 transition-colors duration-500 ${
+      className={`fixed top-0 left-0 right-0 flex justify-between  items-center py-4 px-8 xl:px-12 2xl:px-48 h-[60px] shadow-md z-50 transition-colors duration-500 ${
         isScrolled ? "bg-gray-200" : "bg-white"
       }`}
     >

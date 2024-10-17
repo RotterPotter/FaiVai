@@ -22,7 +22,7 @@ export default function UserProvider(props) {
       );
 
       if (!response.ok) {
-        setToken(null);
+        localStorage.removeItem("access_token");
       } else {
         localStorage.setItem("access_token", token);
       }

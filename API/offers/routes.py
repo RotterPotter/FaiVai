@@ -29,6 +29,7 @@ async def create_offer(
     datetime=offer_schema.datetime,
     description=offer_schema.description,
     price=int(offer_schema.price),
+    currency=offer_schema.currency,
     created_at=datetime.now()
   )
   db_session.add(offer)
@@ -38,6 +39,7 @@ async def create_offer(
 @router.get('/all', status_code=status.HTTP_200_OK)
 async def get_all_offers(db_session: Session = Depends(database.get_db)):
   offers_all = db_session.query(offers.models.Offer).all()
+  
   return offers_all
 
 @router.get('/search/all', status_code=status.HTTP_200_OK)
@@ -53,42 +55,42 @@ async def search_offers(query: str, db_session: Session = Depends(database.get_d
     ).all()
     return offers_all
 
-# @router.get('/search/column', status_code=status.HTTP_200_OK)
-# async def search_offers(query: str, column: str, limit: int = 10, offset: int = 0, db_session: Session = Depends(database.get_db)):
-#     # Validate the column name to prevent SQL injection
-#     valid_columns = ['title', 'description', 'price', 'category', 'datetime']
-#     if column not in valid_columns:
-#         raise HTTPException(status_code=400, detail="Invalid column name")
+@router.get('/search/column', status_code=status.HTTP_200_OK)
+async def search_offers(query: str, column: str, limit: int = 10, offset: int = 0, db_session: Session = Depends(database.get_db)):
+    # Validate the column name to prevent SQL injection
+    valid_columns = ['title', 'description', 'price', 'category', 'datetime']
+    if column not in valid_columns:
+        raise HTTPException(status_code=400, detail="Invalid column name")
 
-#     # Dynamically build the filter condition
-#     filter_condition = getattr(offers.models.Offer, column).ilike(f'%{query}%')
+    # Dynamically build the filter condition
+    filter_condition = getattr(offers.models.Offer, column).ilike(f'%{query}%')
     
-#     # Query the database with pagination
-#     offers_all = db_session.query(offers.models.Offer).filter(
-#         filter_condition
-#     ).limit(limit).offset(offset).all()
+    # Query the database with pagination
+    offers_all = db_session.query(offers.models.Offer).filter(
+        filter_condition
+    ).limit(limit).offset(offset).all()
     
-#     return offers_all
+    return offers_all
 
-# @router.get('/{offer_id}', status_code=status.HTTP_200_OK)
-# async def get_offer(offer_id: int, db_session: Session = Depends(database.get_db)):
-#   offer = db_session.query(offers.models.Offer).filter_by(id=offer_id).first()
-#   return offer
+@router.get('/{offer_id}', status_code=status.HTTP_200_OK)
+async def get_offer(offer_id: int, db_session: Session = Depends(database.get_db)):
+  offer = db_session.query(offers.models.Offer).filter_by(id=offer_id).first()
+  return offer
 
-# @router.put('/{offer_id}', status_code=status.HTTP_200_OK)
-# async def update_offer(offer_id: int, offer_schema: offers.schemas.OfferUpdate, db_session: Session = Depends(database.get_db)):
-#   offer = db_session.query(offers.models.Offer).filter_by(id=offer_id).first()
-#   for key, value in offer_schema.dict().items():
-#     setattr(offer, key, value)
-#   db_session.commit()
-#   return {'msg': 'Offer updated successfully'}
+@router.put('/{offer_id}', status_code=status.HTTP_200_OK)
+async def update_offer(offer_id: int, offer_schema: offers.schemas.Offer, db_session: Session = Depends(database.get_db)):
+  offer = db_session.query(offers.models.Offer).filter_by(id=offer_id).first()
+  for key, value in offer_schema.dict().items():
+    setattr(offer, key, value)
+  db_session.commit()
+  return {'msg': 'Offer updated successfully'}
 
-# @router.delete('/{offer_id}', status_code=status.HTTP_200_OK)
-# async def delete_offer(offer_id: int, db_session: Session = Depends(database.get_db)):
-#   offer = db_session.query(offers.models.Offer).filter_by(id=offer_id).first()
-#   db_session.delete(offer)
-#   db_session.commit()
-#   return {'msg': 'Offer deleted successfully'}
+@router.delete('/{offer_id}', status_code=status.HTTP_200_OK)
+async def delete_offer(offer_id: int, db_session: Session = Depends(database.get_db)):
+  offer = db_session.query(offers.models.Offer).filter_by(id=offer_id).first()
+  db_session.delete(offer)
+  db_session.commit()
+  return {'msg': 'Offer deleted successfully'}
 
 
 
@@ -106,7 +108,8 @@ async def create_fake_data(quantity:int, owner_id:int, db_session: Session = Dep
       price=fake.random_int(min=1, max=1000),
       category=fake.random_element(elements=('Cleaning', 'Dog walking', 'Babysitter', 'Garden work', 'Handyman')),
       datetime=datetime.now(),
-      owner_id=owner_id
+      owner_id=owner_id,
+      currency=fake.random_element(elements=('USD', 'EUR', 'GBP'))
     )
     db_session.add(offer)
   db_session.commit()
