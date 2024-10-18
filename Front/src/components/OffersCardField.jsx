@@ -11,6 +11,7 @@ export default function OffersCardField({
   shortify = true,
 }) {
   const n = 17;
+  const fullvalue = value;
 
   if (shortify) {
     if (value.length > n) {
@@ -23,7 +24,7 @@ export default function OffersCardField({
   }
 
   return (
-    <div className={`w-full px-4 ${className} text-black/70 `}>
+    <div className={`relative w-full px-4 ${className} text-black/70 `}>
       <p className="text-left">
         <span
           className={` flex w-full gap-1 ${

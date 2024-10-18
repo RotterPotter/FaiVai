@@ -5,14 +5,15 @@ export default function Rating({ ratingScore, ratingQuantity }) {
   let stars = [];
 
   for (let i = 0; i < 5; i++) {
-    if (ratingScore > 1) {
+    if (ratingScore >= 1) {
       stars.push(1);
-    } else if (ratingScore === 0.5) {
+      ratingScore -= 1;
+    } else if (!Number.isInteger(ratingScore) && ratingScore >= 0.5) {
       stars.push(0.5);
+      ratingScore -= 0.5;
     } else {
       stars.push(0);
     }
-    ratingScore -= 1;
   }
 
   return (

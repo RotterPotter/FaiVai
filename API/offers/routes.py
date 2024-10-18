@@ -36,10 +36,23 @@ async def create_offer(
   db_session.commit()
   return {'msg': 'Offer created successfully'}
 
-@router.get('/all', status_code=status.HTTP_200_OK)
-async def get_all_offers(db_session: Session = Depends(database.get_db)):
-  offers_all = db_session.query(offers.models.Offer).all()
-  
+@router.get('/all{sort}', status_code=status.HTTP_200_OK)
+async def get_all_offers(sort:str, db_session: Session = Depends(database.get_db)):
+  if sort == 'created_at_desc':
+    offers_all = db_session.query(offers.models.Offer).order_by(offers.models.Offer.created_at.desc()).all()
+  elif sort == 'created_at_asc':
+    offers_all = db_session.query(offers.models.Offer).order_by(offers.models.Offer.created_at).all()
+  elif sort == 'price_h':
+    offers_all = db_session.query(offers.models.Offer).order_by(offers.models.Offer.price.desc()).all()
+  elif sort == 'price_l':
+    offers_all = db_session.query(offers.models.Offer).order_by(offers.models.Offer.price).all()
+  elif sort == 'rating_h':
+    offers_all = db_session.query(offers.models.Offer).order_by(offers.models.Offer.owner_rating.desc()).all()
+  elif sort == 'rating_l':
+    offers_all = db_session.query(offers.models.Offer).order_by(offers.models.Offer.owner_rating).all()
+  else:
+    offers_all = db_session.query(offers.models.Offer).all()
+
   return offers_all
 
 @router.get('/search/all', status_code=status.HTTP_200_OK)
