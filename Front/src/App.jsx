@@ -17,7 +17,7 @@ import EmailVerified from "./pages/EmailVerified.jsx";
 import PostOffer from "./pages/PostOffer.jsx";
 import OffersCatalog from "./pages/OffersCatalog.jsx";
 import OfferDetails from "./pages/OfferDetails.jsx";
-import TestOfferDetails from "./pages/TestOfferDetails.jsx";
+import ServiceRegister from "./pages/ServiceRegister.jsx";
 
 function App() {
   const location = useLocation();
@@ -38,6 +38,7 @@ function App() {
         <Route path="/offers/post" element={<PostOffer />} />
         <Route path="/offers/catalog" element={<OffersCatalog />} />
         <Route path="/offers/detail" element={<OfferDetails />} />
+        <Route path="/service/register" element={<ServiceRegister />} />
       </Routes>
     </div>
   );
