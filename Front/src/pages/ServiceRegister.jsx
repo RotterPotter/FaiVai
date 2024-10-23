@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ArrowSVG from "../assets/SVG/ArrowSVG";
 import Spinner from "../components/Spinner";
 import GreenCircle from "../assets/SVG/GreenCircleSVG";
+import { set } from "date-fns";
 
 export default function ServiceRegister() {
   // page
@@ -41,11 +42,22 @@ export default function ServiceRegister() {
 
   // available days, hours
   const [availableDays, setAvailableDays] = useState([]);
+  const [selectingDay, setSelectingDay] = useState(null);
 
   const handleDayClick = (day) => {
-    setAvailableDays((prevDays) =>
-      prevDays.includes(day) ? prevDays : [...prevDays, day]
-    );
+    if (availableDays.includes(day)) {
+      setAvailableDays((prevDays) =>
+        prevDays.filter((prevDay) => prevDay !== day)
+      );
+      if (selectingDay === day) {
+        setSelectingDay(null);
+      }
+    } else {
+      setAvailableDays((prevDays) =>
+        prevDays.includes(day) ? prevDays : [...prevDays, day]
+      );
+      setSelectingDay(day);
+    }
   };
 
   const handleContinueButtonClick = () => {
@@ -375,18 +387,27 @@ export default function ServiceRegister() {
                   "Saturday",
                   "Sunday",
                 ].map((day) => (
-                  <button
-                    key={day}
-                    type="button"
-                    onClick={() => handleDayClick(day)}
-                    className={`p-2 rounded border ${
-                      availableDays.includes(day)
-                        ? "border-green-500"
-                        : "border-gray-300"
-                    }`}
-                  >
-                    {day}
-                  </button>
+                  <div>
+                    <button
+                      key={day}
+                      type="button"
+                      onClick={() => handleDayClick(day)}
+                      className={`p-2 relative rounded border-2 ${
+                        availableDays.includes(day)
+                          ? "border-green-500"
+                          : "border-gray-300"
+                      }`}
+                    >
+                      {day}
+                    </button>
+                    <div
+                      className={` w-[300px] h-full  absolute bg-red-500 rounded-3xl z-50 ${
+                        selectingDay === day ? "block" : "hidden"
+                      }`}
+                    >
+                      skdjsjd
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
