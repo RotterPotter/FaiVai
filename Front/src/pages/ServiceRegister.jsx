@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import ArrowSVG from "../assets/SVG/ArrowSVG";
 import Spinner from "../components/Spinner";
 import GreenCircle from "../assets/SVG/GreenCircleSVG";
 import { set } from "date-fns";
+import CloseSVG from "../assets/SVG/CloseSVG";
 
 export default function ServiceRegister() {
   // page
@@ -41,23 +42,63 @@ export default function ServiceRegister() {
   const [isTimeSelecting, setIsTimeSelecting] = useState(false);
 
   // available days, hours
-  const [availableDays, setAvailableDays] = useState([]);
   const [selectingDay, setSelectingDay] = useState(null);
+  const timeFromRef = useRef(null);
+  const timeToRef = useRef(null);
+
+  const [availbaldeDaysAndHours, setAvailbaldeDaysAndHours] = useState({});
 
   const handleDayClick = (day) => {
-    if (availableDays.includes(day)) {
-      setAvailableDays((prevDays) =>
-        prevDays.filter((prevDay) => prevDay !== day)
-      );
-      if (selectingDay === day) {
-        setSelectingDay(null);
-      }
+    if (selectingDay === day) {
+      setSelectingDay(null);
     } else {
-      setAvailableDays((prevDays) =>
-        prevDays.includes(day) ? prevDays : [...prevDays, day]
-      );
       setSelectingDay(day);
     }
+  };
+
+  const handleTimeAdd = (day) => {
+    const timeFrom = timeFromRef.current.value;
+    const timeTo = timeToRef.current.value;
+
+    if (timeFrom.length !== 5 || timeTo.length !== 5) {
+      setErrors("Please select a valid time range");
+      setSelectingDay(null);
+      return;
+    }
+
+    // Create a new dictionary with the existing values
+    const newAvailableDaysAndHours = { ...availbaldeDaysAndHours };
+
+    // Add the new key-value pair
+    if (newAvailableDaysAndHours[day] == null) {
+      newAvailableDaysAndHours[day] = [];
+    }
+    newAvailableDaysAndHours[day].push([timeFrom, timeTo]);
+
+    // Update the state with the new dictionary
+    setAvailbaldeDaysAndHours(newAvailableDaysAndHours);
+
+    // Close the time selection modal
+    setSelectingDay(null);
+  };
+
+  const handleTimeDelete = (day, index) => {
+    // Create a new dictionary with the existing values
+    const newAvailableDaysAndHours = { ...availbaldeDaysAndHours };
+
+    // Check if the day exists in the dictionary
+    if (newAvailableDaysAndHours[day]) {
+      // Remove the time entry at the specified index
+      newAvailableDaysAndHours[day].splice(index, 1);
+
+      // If there are no more time entries for the day, remove the day from the dictionary
+      if (newAvailableDaysAndHours[day].length === 0) {
+        delete newAvailableDaysAndHours[day];
+      }
+    }
+
+    // Update the state with the new dictionary
+    setAvailbaldeDaysAndHours(newAvailableDaysAndHours);
   };
 
   const handleContinueButtonClick = () => {
@@ -87,6 +128,13 @@ export default function ServiceRegister() {
       } else {
         setStage(stage + 1);
       }
+    } else if (stage === 4) {
+      if (Object.keys(availbaldeDaysAndHours).length === 0) {
+        setErrors("Select available days and hours");
+      } else {
+        setStage(stage + 1);
+        console.log(availbaldeDaysAndHours);
+      }
     }
   };
 
@@ -102,7 +150,7 @@ export default function ServiceRegister() {
   // set errors to null when category changes
   useEffect(() => {
     setErrors(null);
-  }, [category, serviceType, price]);
+  }, [category, serviceType, price, availbaldeDaysAndHours]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -125,7 +173,7 @@ export default function ServiceRegister() {
         }}
       >
         {isLoading && (
-          <div className="absolute inset-0 flex justify-center items-center z-50 w-full h-full bg-white/50">
+          <div className="absolute inset-0 flex justify-center items-center z-50 w-full h-full bg-white rounded-3xl ">
             <Spinner></Spinner>
           </div>
         )}
@@ -374,10 +422,9 @@ export default function ServiceRegister() {
             )}
           </div>
         ) : stage === 4 ? (
-          <div className="w-full mb-10">
+          <div className=" w-full mb-10">
             <div>
-              <span>Select available days in a week</span>
-              <div className="flex flex-wrap w-full gap-2">
+              <div className="flex flex-wrap justify-start items-center w-full gap-3 ">
                 {[
                   "Monday",
                   "Tuesday",
@@ -387,26 +434,100 @@ export default function ServiceRegister() {
                   "Saturday",
                   "Sunday",
                 ].map((day) => (
-                  <div>
+                  <div key={day}>
                     <button
-                      key={day}
                       type="button"
                       onClick={() => handleDayClick(day)}
-                      className={`p-2 relative rounded border-2 ${
-                        availableDays.includes(day)
+                      className={`w-[100px] p-2 flex justify-center items-center rounded border-2 ${
+                        selectingDay === day
                           ? "border-green-500"
                           : "border-gray-300"
                       }`}
                     >
                       {day}
                     </button>
-                    <div
-                      className={` w-[300px] h-full  absolute bg-red-500 rounded-3xl z-50 ${
-                        selectingDay === day ? "block" : "hidden"
-                      }`}
-                    >
-                      skdjsjd
+                    <div className="w-full flex flex-col justify-center items-center text-sm mt-1 ">
+                      {availbaldeDaysAndHours[day] != null
+                        ? availbaldeDaysAndHours[day].map((time, index) => (
+                            <div key={index} className="flex w-full ">
+                              <span className="w-full text-center">
+                                {time[0]}
+                              </span>
+                              -
+                              <span className="w-full text-center">
+                                {time[1]}
+                              </span>
+                            </div>
+                          ))
+                        : ""}
                     </div>
+
+                    {selectingDay === day && (
+                      <div className="absolute flex flex-col justify-center items-center w-[300px] p-5 bg-white border-2 shadow-2xl rounded-2xl">
+                        <button
+                          type="button"
+                          onClick={() => handleDayClick(selectingDay)}
+                          className="w-full text-right text-gray-500 hover:text-gray-700"
+                        >
+                          Close
+                        </button>
+                        <span className="w-full text-center text-lg font-semibold mb-4">
+                          Select Hours
+                        </span>
+                        <div className="flex flex-col justify-center items-center text-center text-sm mb-3">
+                          {availbaldeDaysAndHours[day] != null
+                            ? availbaldeDaysAndHours[day].map((time, index) => (
+                                <div
+                                  key={index}
+                                  className="flex w-full justify-start items-center"
+                                >
+                                  <span className="w-full text-center ">
+                                    {time[0]}
+                                  </span>
+                                  -
+                                  <span className="w-full text-center ">
+                                    {time[1]}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleTimeDelete(day, index)}
+                                    className="pl-1 "
+                                  >
+                                    <CloseSVG></CloseSVG>
+                                  </button>
+                                </div>
+                              ))
+                            : ""}
+                        </div>
+                        <div className="flex justify-center items-center gap-4 border p-2 m-1 rounded-2xl border-green-500">
+                          <div className="flex flex-col items-center">
+                            <span className="mb-2 text-gray-600">From</span>
+                            <input
+                              type="time"
+                              ref={timeFromRef}
+                              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                            />
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <span className="mb-2 text-gray-600">To</span>
+                            <input
+                              type="time"
+                              ref={timeToRef}
+                              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                            />
+                          </div>
+                        </div>
+                        <div className="w-full flex justify-end items-center mt-4">
+                          <button
+                            type="button"
+                            onClick={() => handleTimeAdd(day)}
+                            className="px-4 py-2 active:shadow-none bg-green-500 text-white rounded-lg shadow-xl hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-200"
+                          >
+                            Add
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
