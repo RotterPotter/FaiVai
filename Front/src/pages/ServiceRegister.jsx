@@ -541,13 +541,23 @@ export default function ServiceRegister() {
             {errors}
           </span>
         )}
-        <button
-          type="button"
-          onClick={handleContinueButtonClick}
-          className="shadow-xl active:shadow-none btn-primary w-full h-[50px] rounded-full p-4 text-white bg-green-500"
-        >
-          Continue
-        </button>
+        {stage === 4 ? (
+          <button
+            type="submit"
+            onClick={registerService}
+            className="shadow-xl active:shadow-none btn-primary w-full h-[50px] rounded-full p-4 text-white bg-green-500"
+          >
+            Register service
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={handleContinueButtonClick}
+            className="shadow-xl active:shadow-none btn-primary w-full h-[50px] rounded-full p-4 text-white bg-green-500"
+          >
+            Continue
+          </button>
+        )}
       </form>
     </div>
   );

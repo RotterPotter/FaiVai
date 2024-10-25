@@ -2,6 +2,7 @@ import sqlalchemy.orm as orm
 from datetime import datetime
 from database import Base
 from typing import Optional
+from services.models import Service
 
 class User(Base):
   __tablename__ = "users"
@@ -15,6 +16,8 @@ class User(Base):
   email_verified: orm.Mapped[bool] = orm.mapped_column(default=False)
   rating: orm.Mapped[float] = orm.mapped_column(default=0.0)
   reviews_count: orm.Mapped[int] = orm.mapped_column(default=0)
+  # reviews: orm.Mapped[list[Review]] = orm.relationship("Review", back_populates="owner")
+  services: orm.Mapped[list["Service"]] = orm.relationship("Service", back_populates="owner", cascade="all, delete-orphan" )
 
 class TokenBlacklist(Base):
   __tablename__ = 'token_blacklist'
