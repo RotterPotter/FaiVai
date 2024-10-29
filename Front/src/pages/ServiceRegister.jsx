@@ -4,13 +4,13 @@ import Spinner from "../components/Spinner";
 import GreenCircle from "../assets/SVG/GreenCircleSVG";
 
 import CloseSVG from "../assets/SVG/CloseSVG";
-import { set } from "date-fns";
-import { stringify } from "postcss";
+import { useNavigate } from "react-router-dom";
 
 export default function ServiceRegister() {
   // page
   const [stage, setStage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   // errors
   const [errors, setErrors] = useState(null);
@@ -235,6 +235,7 @@ export default function ServiceRegister() {
         onSubmit={(e) => {
           e.preventDefault();
           registerService();
+          navigate("/");
         }}
       >
         {isLoading && (
