@@ -21,9 +21,13 @@ def create_category(
   db_session.refresh(new_category)
   return new_category
 
-@router.get('/{category_id}', response_model=categories.schemas.Category)
+@router.get('/all', status_code=status.HTTP_200_OK)
+def get_all_category(db_session: Session = Depends(database.get_db)):
+  return db_session.query(categories.models.Category).all()
+
+@router.get('/{category_id}')
 def get_category(category_id: int, db_session: Session = Depends(database.get_db)):
-  category = db_session.query(categories.models.Category).filter(categories.models.Category.id == category_id).first()
+  category = db_session.query(categories.models.Category).filter_by(id=category_id).first()
 
   if not category:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
@@ -41,7 +45,7 @@ def delete_category(category_id: int, db_session: Session = Depends(database.get
   db_session.commit()
   return {"detail": "Category deleted"}
 
-@router.put('/{category_id}', response_model=categories.schemas.Category)
+@router.put('/{category_id}')
 def update_category(
   category_id: int,
   category_schema: categories.schemas.CategoryCreate,

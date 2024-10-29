@@ -4,6 +4,7 @@ import service_types.schemas
 import categories.models
 import service_types.models
 import database
+from typing import List
 
 router = APIRouter(prefix='/service_type', tags=['service_types'])
 
@@ -20,14 +21,17 @@ async def create_service_type(
   service_type = service_types.models.ServiceType(
     name=service_type_schema.name,
     category=category,
-    units=service_type_schema.units,
-    description=service_type_schema.description
+    available_units=service_type_schema.available_units,
   )
 
   db_session.add(service_type)
   db_session.commit()
   db_session.refresh(service_type)
   return service_type
+
+@router.get('/all',  response_model=List[service_types.schemas.ServiceTypeReturn], status_code=status.HTTP_200_OK,)
+def get_all_service_types(db_session: Session = Depends(database.get_db)):
+  return db_session.query(service_types.models.ServiceType).all()
 
 @router.get('/{service_type_id}', response_model=service_types.schemas.ServiceTypeCreate)
 async def get_service_type(service_type_id: int, db_session: Session = Depends(database.get_db)):
@@ -37,6 +41,8 @@ async def get_service_type(service_type_id: int, db_session: Session = Depends(d
     raise HTTPException(status_code=404, detail="ServiceType not found")
 
   return service_type
+
+
 
 @router.delete('/{service_type_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_service_type(service_type_id: int, db_session: Session = Depends(database.get_db)):

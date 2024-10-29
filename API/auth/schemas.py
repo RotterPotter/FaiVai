@@ -15,8 +15,7 @@ class UserEmail(BaseModel):
 
 class UserInfo(User):
   id:int
-  rating:float
-  reviews_count:int
+  rating:float  
 
 class EmailPassword(UserEmail):
   password: str

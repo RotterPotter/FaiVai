@@ -21,10 +21,14 @@ export default function UserProvider(props) {
         requestOptions
       );
 
+      const responseJson = await response.json();
+
       if (!response.ok) {
         localStorage.removeItem("access_token");
+        localStorage.removeItem("user_id");
       } else {
         localStorage.setItem("access_token", token);
+        localStorage.setItem("user_id", responseJson.id);
       }
     };
 

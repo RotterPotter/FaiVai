@@ -2,24 +2,26 @@ import { useEffect, useState, useRef } from "react";
 import ArrowSVG from "../assets/SVG/ArrowSVG";
 import Spinner from "../components/Spinner";
 import GreenCircle from "../assets/SVG/GreenCircleSVG";
-import { set } from "date-fns";
+
 import CloseSVG from "../assets/SVG/CloseSVG";
+import { set } from "date-fns";
+import { stringify } from "postcss";
 
 export default function ServiceRegister() {
   // page
-  const [stage, setStage] = useState(4);
+  const [stage, setStage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
   // errors
   const [errors, setErrors] = useState(null);
 
   // category
-  const categories = ["Cleaning", "Gardening", "Moving", "Painting", "Other"];
-  const [category, setCategory] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState(null); // {id: 1, name: "Cleaning"}
   const [isCategorySelecting, setIsCategorySelecting] = useState(false);
 
   // service type
-  const serviceTypes = ["One-time", "Recurring"];
+  const [serviceTypes, setServiceTypes] = useState([]);
   const [serviceType, setServiceType] = useState(null);
   const [isServiceTypeSelecting, setIsServiceTypeSelecting] = useState(false);
 
@@ -126,15 +128,10 @@ export default function ServiceRegister() {
       if (address === null) {
         setErrors("Select location ");
       } else {
-        setStage(stage + 1);
+        setStage(4);
       }
     } else if (stage === 4) {
-      if (Object.keys(availbaldeDaysAndHours).length === 0) {
-        setErrors("Select available days and hours");
-      } else {
-        setStage(stage + 1);
-        console.log(availbaldeDaysAndHours);
-      }
+      setStage(stage + 1);
     }
   };
 
@@ -159,7 +156,75 @@ export default function ServiceRegister() {
     }, 1000);
   }, [stage]);
 
-  const registerService = async () => {};
+  useEffect(() => {
+    setIsLoading(true);
+    getCategories();
+    getServiceTypes();
+    setIsLoading(false);
+  }, []);
+
+  // Get categories
+  const getCategories = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/category/all");
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      setErrors(error.message);
+    }
+  };
+
+  // Get service types
+  const getServiceTypes = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/service_type/all");
+      const data = await response.json();
+      setServiceTypes(data);
+    } catch (error) {
+      setErrors(error.message);
+    }
+  };
+
+  const registerService = async () => {
+    setIsLoading(true);
+    try {
+      console.log(typeof availbaldeDaysAndHours);
+      const response = await fetch("http://localhost:8000/services/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          owner_id: localStorage.getItem("user_id"),
+          category: category.name,
+          service_type_id: serviceType.id,
+          price_per_unit: price,
+          unit,
+          speed_per_unit: duration,
+          location_or_zone: [0],
+          available_datetimes: availbaldeDaysAndHours,
+        }),
+      });
+
+      if (response.ok) {
+        setErrors(null);
+        setStage(0);
+        setCategory(null);
+        setServiceType(null);
+        setPrice(null);
+        setUnit(units[0]);
+        setDuration(null);
+        setAddress(null);
+        setAvailbaldeDaysAndHours({});
+      } else {
+        const data = await response.json();
+        setErrors(data.message);
+      }
+    } catch (error) {
+      setErrors(error.message);
+    }
+    setIsLoading(false);
+  };
 
   return (
     <div className="flex justify-center items-center h-screen pb-[160px]">
@@ -199,7 +264,7 @@ export default function ServiceRegister() {
             ? "Set a price"
             : stage === 3
             ? "Select working location"
-            : stage === 4
+            : stage >= 4
             ? "When are you available?"
             : ""}
         </span>
@@ -215,7 +280,7 @@ export default function ServiceRegister() {
                   : "border border-black/70"
               } ${category ? "text-black" : "text-black/50"}`}
             >
-              <span>{category || "Select category"}</span>
+              <span>{category ? category.name : "Select category"}</span>
               <ArrowSVG />
               <div
                 className={`absolute left-0 top-[50px] w-full max-h-[120px] shadow-2xl flex flex-col bg-white z-50 rounded-lg overflow-y-auto transition-opacity duration-200 ${
@@ -226,12 +291,12 @@ export default function ServiceRegister() {
               >
                 {categories.map((category) => (
                   <button
-                    key={category}
+                    key={category.id}
                     type="button"
                     className="text-left p-2 hover:bg-gray-100 cursor-pointer"
                     onClick={() => setCategory(category)}
                   >
-                    {category}
+                    {category.name}
                   </button>
                 ))}
               </div>
@@ -249,7 +314,9 @@ export default function ServiceRegister() {
                   : "border border-black/70"
               } ${serviceType ? "text-black" : "text-black/50"}`}
             >
-              <span>{serviceType || "Select service type"}</span>
+              <span>
+                {serviceType ? serviceType.name : "Select service type"}
+              </span>
               <ArrowSVG />
               <div
                 className={`absolute left-0 top-[50px] w-full max-h-[120px] shadow-2xl flex flex-col bg-white z-50 rounded-lg overflow-y-auto transition-opacity duration-200 ${
@@ -260,12 +327,12 @@ export default function ServiceRegister() {
               >
                 {serviceTypes.map((serviceType) => (
                   <button
-                    key={serviceType}
+                    key={serviceType.id}
                     type="button"
                     className="text-left p-2 hover:bg-gray-100 cursor-pointer"
                     onClick={() => setServiceType(serviceType)}
                   >
-                    {serviceType}
+                    {serviceType.name}
                   </button>
                 ))}
               </div>
@@ -421,7 +488,7 @@ export default function ServiceRegister() {
               </div>
             )}
           </div>
-        ) : stage === 4 ? (
+        ) : stage >= 4 ? (
           <div className=" w-full mb-10">
             <div>
               <div className="flex flex-wrap justify-start items-center w-full gap-3 ">
@@ -543,9 +610,16 @@ export default function ServiceRegister() {
         )}
         {stage === 4 ? (
           <button
+            type="button"
+            onClick={handleContinueButtonClick}
+            className="shadow-xl active:shadow-none btn-primary w-full h-[50px] rounded-full p-4  text-white bg-green-500"
+          >
+            Register service
+          </button>
+        ) : stage >= 5 ? (
+          <button
             type="submit"
-            onClick={registerService}
-            className="shadow-xl active:shadow-none btn-primary w-full h-[50px] rounded-full p-4 text-white bg-green-500"
+            className="shadow-xl active:shadow-none btn-primary w-full h-[50px] rounded-full p-4  text-white bg-green-500"
           >
             Register service
           </button>
@@ -553,7 +627,7 @@ export default function ServiceRegister() {
           <button
             type="button"
             onClick={handleContinueButtonClick}
-            className="shadow-xl active:shadow-none btn-primary w-full h-[50px] rounded-full p-4 text-white bg-green-500"
+            className="shadow-xl active:shadow-none btn-primary w-full h-[50px] rounded-full p-4  text-white bg-green-500"
           >
             Continue
           </button>

@@ -1,9 +1,18 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List
 
 class ServiceTypeCreate(BaseModel):
   category_id: int
-  units: List[str]
+  available_units: List[str]
   name: str
-  description: Optional[str] = None
+
+class ServiceTypeReturn(BaseModel):
+  id: int
+  category_id: int
+  available_units: List[str]
+  name: str
+
+
   
+
+

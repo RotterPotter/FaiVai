@@ -1,35 +1,27 @@
-from __future__ import annotations
+from typing import TYPE_CHECKING, List
+from sqlalchemy import  ForeignKey,  DateTime, ARRAY, JSON
 import sqlalchemy.orm as orm
-from datetime import datetime
 from database import Base
-from sqlalchemy import ARRAY, Float, DateTime
-from typing import Union
-
-from typing import TYPE_CHECKING
+from datetime import datetime
 
 if TYPE_CHECKING:
     from auth.models import User  # Import User for type checking only
     from service_types.models import ServiceType  # Import ServiceType for type checking only
-    from categories.models import Category
-
+    
 
 class Service(Base):
-  __tablename__ = "services"
+    __tablename__ = "services"
 
-  id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
-  owner: orm.Mapped[User] = orm.relationship("User", back_populates="service")
-  
+    id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
+    owner_id: orm.Mapped[int] = orm.mapped_column(ForeignKey("users.id"))
+    service_type_id: orm.Mapped[int] = orm.mapped_column(ForeignKey("service_types.id"))
 
-  category: orm.Mapped[Category] = orm.relationship("Category")
-  service_type: orm.Mapped[ServiceType] = orm.relationship("ServiceType")
-  price_per_unit: orm.Mapped[float] # price in euros
-  unit: orm.Mapped[str]
-  duration_in_minutes: orm.Mapped[int]
-  location_or_zone: orm.Mapped[Union[list[float], None]] = orm.mapped_column(ARRAY(Float), default=None)
-  available_datetimes: orm.Mapped[list[datetime]] = orm.mapped_column(ARRAY(DateTime))
-  disabled: orm.Mapped[bool] = orm.mapped_column(default=False)
-  
-  
+    unit: orm.Mapped[str]
+    price_per_unit: orm.Mapped[float]
+    speed_per_unit: orm.Mapped[float]   
+    location_or_zone: orm.Mapped[str]
+    disabled: orm.Mapped[bool] = orm.mapped_column(default=False)
+    available_datetimes: orm.Mapped[List[List[datetime]]] = orm.mapped_column(ARRAY(DateTime))
 
-  
-
+    owner: orm.Mapped["User"] =  orm.relationship("User", back_populates="services")
+    service_type: orm.Mapped["ServiceType"] = orm.relationship("ServiceType", back_populates="services")

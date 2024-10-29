@@ -19,11 +19,16 @@ export default function FindJobs() {
         <FirstButton name="Catalog" navigateTo={"offers/catalog"}></FirstButton>
         <FirstButton name="Messages"></FirstButton>
       </div>
-      <div>
+      <div className="flex gap-3">
         <FirstButton
           name="Register your service"
           navigateTo={"service/register/"}
         ></FirstButton>
+        <FirstButton
+          name="Find workers"
+          navigateTo={"service/find-workers/"}
+        ></FirstButton>
+        <FirstButton name="Admin Panel" navigateTo={"admin/"}></FirstButton>
       </div>
       {token && <div className="text-green-500 text-3xl mt-5">Logged In</div>}
     </div>

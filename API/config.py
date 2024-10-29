@@ -11,5 +11,10 @@ class Settings:
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
     EMAIL_SENDER: str = os.getenv("EMAIL_SENDER")
     EMAIL_PASSWORD: str = os.getenv("EMAIL_PASSWORD")
+    POSTGRES_USER: str = os.getenv("POSTGRES_USER")
+    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD")
+    POSTGRES_DB: str = os.getenv("POSTGRES_DB")
+    HOST: str = os.getenv("HOST")
+    PORT: str = os.getenv("PORT")
 
 settings = Settings()

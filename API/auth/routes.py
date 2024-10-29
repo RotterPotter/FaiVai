@@ -77,6 +77,7 @@ async def login(
       headers={"WWW-Authenticate": "Bearer"},
     )
   return service.create_access_token(data={"sub":user.email})
+  
 
 
 @router.post(

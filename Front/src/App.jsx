@@ -18,6 +18,8 @@ import PostOffer from "./pages/PostOffer.jsx";
 import OffersCatalog from "./pages/OffersCatalog.jsx";
 import OfferDetails from "./pages/OfferDetails.jsx";
 import ServiceRegister from "./pages/ServiceRegister.jsx";
+import FindWorkers from "./pages/FindWorkers.jsx";
+import Admin from "./pages/Admin.jsx";
 
 function App() {
   const location = useLocation();
@@ -39,6 +41,8 @@ function App() {
         <Route path="/offers/catalog" element={<OffersCatalog />} />
         <Route path="/offers/detail" element={<OfferDetails />} />
         <Route path="/service/register" element={<ServiceRegister />} />
+        <Route path="/service/register" element={<FindWorkers />} />
+        <Route path="/admin/" element={<Admin />} />
       </Routes>
     </div>
   );
