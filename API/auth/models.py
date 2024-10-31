@@ -19,6 +19,7 @@ class User(Base):
     email_verified: orm.Mapped[bool] = orm.mapped_column(default=False)
     disabled: orm.Mapped[bool] = orm.mapped_column(default=False)
 
+    
     services: orm.Mapped[list["Service"]] = orm.relationship("Service", back_populates="owner", cascade="all, delete-orphan")
 
 class TokenBlacklist(Base):

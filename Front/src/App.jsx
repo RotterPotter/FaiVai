@@ -20,6 +20,7 @@ import OfferDetails from "./pages/OfferDetails.jsx";
 import ServiceRegister from "./pages/ServiceRegister.jsx";
 import FindWorkers from "./pages/FindWorkers.jsx";
 import Admin from "./pages/Admin.jsx";
+import YourServices from "./pages/YourServices.jsx";
 
 function App() {
   const location = useLocation();
@@ -43,6 +44,7 @@ function App() {
         <Route path="/service/register" element={<ServiceRegister />} />
         <Route path="/service/register" element={<FindWorkers />} />
         <Route path="/admin/" element={<Admin />} />
+        <Route path="/your_services/" element={<YourServices />} />
       </Routes>
     </div>
   );

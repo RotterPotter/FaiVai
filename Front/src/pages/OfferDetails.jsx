@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import OffersCardField from "../components/OffersCardField";
+import OffersCardField from "../components/ServiceCardField";
 import { Link } from "react-router-dom";
 import ArrowSVG from "../assets/SVG/ArrowSVG";
 

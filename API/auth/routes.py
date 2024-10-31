@@ -199,31 +199,6 @@ async def verify_email(
       status_code=status.HTTP_400_BAD_REQUEST,
       detail="Invalid token"
     )
-
-
-# @router.post('/reset/password/done')
-# async def reset_password_done(
-#   token:str = Depends(oauth2_scheme),
-#   db_session: Session = Depends(database.get_db)
-# ): # Blacklists code_token when resetting done
-#   payload = service.decode_access_token(token)
-#   expires_at = payload.get("exp")
-#   if not expires_at:
-#     raise HTTPException(
-#       status_code=status.HTTP_400_BAD_REQUEST,
-#       detail="Invalid token"
-#     )
   
-#   service.blacklist_token(db_session, token, expires_at)
-#   return {"msg": "Token successfully added in black list"}
 
 
-
-"""
-def refresh_token()
-def read_users_me()
-def update_user_me()
-def reset_password()
-def reset_password_confirm()
-def validate_token()
-""" 

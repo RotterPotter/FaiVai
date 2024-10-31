@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import OfferCard from "../components/OfferCard";
+import OfferCard from "../components/ServiceCard";
 import "../index.css";
 import FilterSVG from "../assets/SVG/FIlterSVG";
 import CloseSVG from "../assets/SVG/CloseSVG";

@@ -22,6 +22,7 @@ class Service(Base):
     location_or_zone: orm.Mapped[str]
     disabled: orm.Mapped[bool] = orm.mapped_column(default=False)
     available_datetimes: orm.Mapped[List[List[datetime]]] = orm.mapped_column(ARRAY(DateTime))
+    created_at: orm.Mapped[datetime] = orm.mapped_column(DateTime, default=datetime.now)
 
     owner: orm.Mapped["User"] =  orm.relationship("User", back_populates="services")
     service_type: orm.Mapped["ServiceType"] = orm.relationship("ServiceType", back_populates="services")

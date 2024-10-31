@@ -21,4 +21,21 @@ class ServiceReturn(BaseModel):
     location_or_zone: str
     disabled: bool
     available_datetimes: List[List[datetime]]
-    
+
+class ServiceSpecifiedReturn(BaseModel): 
+    id: int
+    owner_firstname: str
+    owner_lastname: str
+    owner_rating: float
+    owner_reviews_count: int
+    category_name: str
+    service_type_name: str
+    unit: str
+    price_per_unit: float
+    speed_per_unit: float
+    location_or_zone: str
+    available_datetimes: List[List[datetime]]
+    created_at: datetime
+
+class ServiceByOwner(BaseModel):
+    owner_id: str

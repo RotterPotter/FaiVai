@@ -11,8 +11,8 @@ export default function RatingStar({ type }) {
           xmlnsXlink="http://www.w3.org/1999/xlink"
           version="1.0"
           id="Layer_1"
-          width="12px"
-          height="12px"
+          width="114x"
+          height="14px"
           viewBox="0 0 64 64"
           enableBackground="new 0 0 64 64"
           xmlSpace="preserve"
@@ -42,8 +42,8 @@ export default function RatingStar({ type }) {
         </svg>
       ) : type == 0.5 ? (
         <svg
-          width="12"
-          height="12"
+          width="14"
+          height="14"
           viewBox="0 0 64 64"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -75,8 +75,8 @@ export default function RatingStar({ type }) {
           xmlnsXlink="http://www.w3.org/1999/xlink"
           version="1.0"
           id="Layer_1"
-          width="12px"
-          height="12px"
+          width="14px"
+          height="14px"
           viewBox="0 0 64 64"
           enableBackground="new 0 0 64 64"
           xmlSpace="preserve"

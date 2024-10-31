@@ -4,11 +4,13 @@ import DateSVG from "../assets/SVG/DateSVG";
 import ClockSVG from "../assets/SVG/ClockSVG";
 import MoneySVG from "../assets/SVG/MoneySVG";
 
-export default function OffersCardField({
+export default function ServiceCardField({
   name,
   value,
   className,
   shortify = true,
+  additionnalValue = "",
+  currency = "",
 }) {
   const n = 17;
   const fullvalue = value;
@@ -47,6 +49,7 @@ export default function OffersCardField({
             ""
           )}
           {value}
+          {currency} {additionnalValue ? "/" : ""} {additionnalValue}
         </span>
       </p>
     </div>

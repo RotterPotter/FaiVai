@@ -11,10 +11,54 @@ from typing import List
 
 router = APIRouter(prefix='/services', tags=['services'])
 
-@router.get('/all', status_code=status.HTTP_200_OK,)
+@router.get('/all', status_code=status.HTTP_200_OK)
 def get_all_services(db_session: Session = Depends(database.get_db)):
   return db_session.query(services.models.Service).all()
   
+@router.post('/get_by_owner', status_code=status.HTTP_200_OK)
+async def get_services_by_owner(schema: services.schemas.ServiceByOwner, db_session: Session = Depends(database.get_db)):
+  owner_id = int(schema.owner_id)
+  services_in_db = db_session.query(services.models.Service).filter_by(owner_id=owner_id).all()
+  specified_services = []
+  
+
+  for service in services_in_db:
+    specified_service = services.schemas.ServiceSpecifiedReturn(
+      id=service.id,
+      owner_firstname=service.owner.firstname,
+      owner_lastname=service.owner.lastname,
+      owner_rating=service.owner.rating,
+      owner_reviews_count=len(service.owner.received_reviews),
+      category_name=service.service_type.category.name,
+      service_type_name=service.service_type.name,
+      unit=service.unit,
+      price_per_unit=service.price_per_unit,
+      speed_per_unit=service.speed_per_unit,
+      location_or_zone=service.location_or_zone,
+      available_datetimes=service.available_datetimes,
+      created_at=service.created_at
+    )
+    specified_services.append(specified_service)
+
+  return specified_services
+
+@router.post('/create_test_data', status_code=status.HTTP_201_CREATED)
+async def create_test_data(quantity:int, db_session: Session = Depends(database.get_db)):
+  for _ in range(quantity):
+    owner = db_session.query(auth.models.User).first()
+    service_type = db_session.query(service_types.models.ServiceType).first()
+    service = services.models.Service(
+      owner=owner,
+      service_type=service_type,
+      price_per_unit=10.0,
+      unit='GB',
+      speed_per_unit=1,
+      location_or_zone='Nairobi',
+      available_datetimes=create_schedule(data={'monday': [['08:00', '09:00'], ['10:00', '11:00']]}, quantity=7)
+    )
+    db_session.add(service)
+    db_session.commit()
+  return {"detail": "Test data created"}
 
 @router.post('/create', status_code=status.HTTP_201_CREATED)
 async def create_service(

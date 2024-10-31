@@ -1,11 +1,11 @@
 import JobIcon from "./JobIcon";
 import Ava from "./Ava";
 import Rating from "./Rating";
-import OffersCardField from "./OffersCardField";
+import OffersCardField from "./ServiceCardField";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 
-export default function OfferCard({
+export default function ServiceCard({
   id,
   location,
   datetime,
@@ -15,7 +15,7 @@ export default function OfferCard({
   title,
   category,
   price,
-  currency,
+  unit,
   createdAt,
 }) {
   const date = new Date(datetime);
@@ -74,7 +74,7 @@ export default function OfferCard({
 
   return (
     <Link to={`/offers/detail?id=${id}`}>
-      <div className="flex flex-col font-semibold justify-between border hover:shadow-green-500/30 border-green-500 text-sm hover:shadow-2xl  hover:-translate-y-1 shadow-lg w-[200px] h-[280px] rounded-3xl bg-white text-black/70">
+      <div className="flex flex-col font-semibold justify-between border border-green-500 text-sm hover:shadow-2xl  hover:-translate-y-1 shadow-lg w-[200px] h-[280px] rounded-3xl bg-white text-black/70">
         <div className="flex flex-col gap-1">
           <div className="w-full h-[60px] bg-green-500  rounded-t-3xl flex flex-col  justify-center items-center mb-2">
             <JobIcon iconType={category.toLowerCase()}></JobIcon>

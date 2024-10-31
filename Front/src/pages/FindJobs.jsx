@@ -29,6 +29,10 @@ export default function FindJobs() {
           navigateTo={"service/find-workers/"}
         ></FirstButton>
         <FirstButton name="Admin Panel" navigateTo={"admin/"}></FirstButton>
+        <FirstButton
+          name="Your services"
+          navigateTo={"/your_services"}
+        ></FirstButton>
       </div>
       {token && <div className="text-green-500 text-3xl mt-5">Logged In</div>}
     </div>
