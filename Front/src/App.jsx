@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -16,7 +16,7 @@ import NewPwd from "./pages/Login/NewPwd.jsx";
 import EmailVerified from "./pages/EmailVerified.jsx";
 import PostOffer from "./pages/PostOffer.jsx";
 import OffersCatalog from "./pages/OffersCatalog.jsx";
-import OfferDetails from "./pages/OfferDetails.jsx";
+import ServiceDetail from "./pages/ServiceDetail.jsx";
 import ServiceRegister from "./pages/ServiceRegister.jsx";
 import FindWorkers from "./pages/FindWorkers.jsx";
 import Admin from "./pages/Admin.jsx";
@@ -40,7 +40,7 @@ function App() {
         <Route path="/login/emailverified" element={<EmailVerified />} />
         <Route path="/offers/post" element={<PostOffer />} />
         <Route path="/offers/catalog" element={<OffersCatalog />} />
-        <Route path="/offers/detail" element={<OfferDetails />} />
+        <Route path="/service/detail" element={<ServiceDetail />} />
         <Route path="/service/register" element={<ServiceRegister />} />
         <Route path="/service/register" element={<FindWorkers />} />
         <Route path="/admin/" element={<Admin />} />

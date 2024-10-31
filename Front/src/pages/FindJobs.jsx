@@ -14,11 +14,7 @@ export default function FindJobs() {
         <div className="text-green-500">Extra Income</div>
       </p>
       <Search name={"Search location"}></Search>
-      <div className="flex justify-between items-center w-full  max-w-[400px] sm:max-w-[600px] -mt-1">
-        <FirstButton name="Map"></FirstButton>
-        <FirstButton name="Catalog" navigateTo={"offers/catalog"}></FirstButton>
-        <FirstButton name="Messages"></FirstButton>
-      </div>
+      <div className="flex justify-between items-center w-full  max-w-[400px] sm:max-w-[600px] -mt-1"></div>
       <div className="flex gap-3">
         <FirstButton
           name="Register your service"
@@ -28,7 +24,6 @@ export default function FindJobs() {
           name="Find workers"
           navigateTo={"service/find-workers/"}
         ></FirstButton>
-        <FirstButton name="Admin Panel" navigateTo={"admin/"}></FirstButton>
         <FirstButton
           name="Your services"
           navigateTo={"/your_services"}

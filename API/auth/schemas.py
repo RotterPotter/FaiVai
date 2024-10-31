@@ -27,3 +27,8 @@ class Token(BaseModel):
   access_token:str
   token_type:str
 
+class AvatarScheam(BaseModel):
+  avatar:str
+  class Config:
+    orm_mode = True
+

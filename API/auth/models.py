@@ -18,6 +18,7 @@ class User(Base):
     rating: orm.Mapped[float] = orm.mapped_column(default=0)
     email_verified: orm.Mapped[bool] = orm.mapped_column(default=False)
     disabled: orm.Mapped[bool] = orm.mapped_column(default=False)
+    avatar: orm.Mapped[Optional[str]] = orm.mapped_column(default=None)
 
     
     services: orm.Mapped[list["Service"]] = orm.relationship("Service", back_populates="owner", cascade="all, delete-orphan")

@@ -51,7 +51,7 @@ export default function NewServiceCard(service) {
 
   return (
     <Link
-      to={"/"}
+      to={"/service/detail?id=" + serviceData.id}
       className="flex flex-col justify-start items-center hover:-translate-y-2 transition-transform duration-200 border border-black/15 w-[200px] h-[280px] shadow-xl text-black/70 font-bold text-sm rounded-3xl"
     >
       <div className="flex flex-col p-3 justify-center items-center w-full bg-green-500 h-[60px] rounded-t-3xl">

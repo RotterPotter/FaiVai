@@ -92,14 +92,30 @@ async def create_service(
   db_session.refresh(service)
   return service
 
-@router.get('/{service_id}', response_model=services.schemas.ServiceCreate)
+@router.get('/{service_id}', response_model=services.schemas.ServiceSpecifiedReturn)
 async def get_service(service_id: int, db_session: Session = Depends(database.get_db)):
   service = db_session.query(services.models.Service).filter_by(id=service_id).first()
 
   if not service:
     raise HTTPException(status_code=404, detail="Service not found")
+  
+  specified_service = services.schemas.ServiceSpecifiedReturn(
+      id=service.id,
+      owner_firstname=service.owner.firstname,
+      owner_lastname=service.owner.lastname,
+      owner_rating=service.owner.rating,
+      owner_reviews_count=len(service.owner.received_reviews),
+      category_name=service.service_type.category.name,
+      service_type_name=service.service_type.name,
+      unit=service.unit,
+      price_per_unit=service.price_per_unit,
+      speed_per_unit=service.speed_per_unit,
+      location_or_zone=service.location_or_zone,
+      available_datetimes=service.available_datetimes,
+      created_at=service.created_at
+    )
 
-  return service
+  return specified_service
 
  
 

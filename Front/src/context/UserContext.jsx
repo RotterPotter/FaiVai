@@ -5,6 +5,7 @@ export const UserContext = React.createContext();
 
 export default function UserProvider(props) {
   const [token, setToken] = useState(localStorage.getItem("access_token"));
+  const [language, setLanguage] = useState("English");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -35,8 +36,13 @@ export default function UserProvider(props) {
     fetchUser();
   }, [token]);
 
+  useEffect(() => {
+    localStorage.setItem("language", language);
+  }),
+    [language];
+
   return (
-    <UserContext.Provider value={[token, setToken]}>
+    <UserContext.Provider value={[token, setToken, language, setLanguage]}>
       {props.children}
     </UserContext.Provider>
   );

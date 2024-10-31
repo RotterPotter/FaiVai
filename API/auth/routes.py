@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Depends, HTTPException
+from fastapi import APIRouter, status, Depends, HTTPException, File, UploadFile
 import auth.schemas
 import database
 import auth.models
@@ -200,5 +200,4 @@ async def verify_email(
       detail="Invalid token"
     )
   
-
 
