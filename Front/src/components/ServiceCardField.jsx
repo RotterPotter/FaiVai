@@ -48,8 +48,14 @@ export default function ServiceCardField({
           ) : (
             ""
           )}
-          {value}
-          {currency} {additionnalValue ? "/" : ""} {additionnalValue}
+          {value == "nullmin" ? (
+            "Not specified"
+          ) : (
+            <span>
+              {value}
+              {currency} {additionnalValue ? "/" : ""} {additionnalValue}
+            </span>
+          )}
         </span>
       </p>
     </div>

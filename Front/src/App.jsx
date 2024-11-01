@@ -21,6 +21,7 @@ import ServiceRegister from "./pages/ServiceRegister.jsx";
 import FindWorkers from "./pages/FindWorkers.jsx";
 import Admin from "./pages/Admin.jsx";
 import YourServices from "./pages/YourServices.jsx";
+import FindService from "./pages/FindService.jsx";
 
 function App() {
   const location = useLocation();
@@ -43,6 +44,7 @@ function App() {
         <Route path="/service/detail" element={<ServiceDetail />} />
         <Route path="/service/register" element={<ServiceRegister />} />
         <Route path="/service/register" element={<FindWorkers />} />
+        <Route path="/services/find" element={<FindService />} />
         <Route path="/admin/" element={<Admin />} />
         <Route path="/your_services/" element={<YourServices />} />
       </Routes>

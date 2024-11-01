@@ -1,0 +1,47 @@
+{
+  "admin": {
+    "email": "admin@gmail.com",
+    "password": "admin",
+    "email_verified": true,
+    "firstname": "Admin",
+    "lastname": "Admin"
+  },
+  "categories": [
+    "Cleaning",
+    "Plumbing",
+    "Electrical",
+    "Carpentry",
+    "Gardening",
+    "Painting",
+    "Moving",
+    "Delivery",
+    "Handyman"
+  ],
+  "service_types": [
+    {
+      "name": "House Cleaning",
+      "category_id": 1,
+      "available_units": ["Hour", "Room"]
+    },
+    { "name": "Drain Cleaning", "category_id": 2, "available_units": ["Hour"] },
+    {
+      "name": "Electrical Installation",
+      "category_id": 3,
+      "available_units": ["Hour"]
+    },
+    {
+      "name": "Furniture Assembly",
+      "category_id": 4,
+      "available_units": ["Hour"]
+    },
+    { "name": "Lawn Mowing", "category_id": 5, "available_units": ["Hour"] },
+    {
+      "name": "Interior Painting",
+      "category_id": 6,
+      "available_units": ["Hour"]
+    },
+    { "name": "Moving", "category_id": 7, "available_units": ["Hour"] },
+    { "name": "Delivery", "category_id": 8, "available_units": ["Hour"] },
+    { "name": "Handyman", "category_id": 9, "available_units": ["Hour"] }
+  ]
+}

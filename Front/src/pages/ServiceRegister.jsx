@@ -5,6 +5,7 @@ import GreenCircle from "../assets/SVG/GreenCircleSVG";
 
 import CloseSVG from "../assets/SVG/CloseSVG";
 import { useNavigate } from "react-router-dom";
+import { set } from "date-fns";
 
 export default function ServiceRegister() {
   // page
@@ -25,12 +26,18 @@ export default function ServiceRegister() {
   const [serviceType, setServiceType] = useState(null);
   const [isServiceTypeSelecting, setIsServiceTypeSelecting] = useState(false);
 
+  const handleServiceTypeSelection = (serviceType) => {
+    setServiceType(serviceType);
+    setAvailableUnits(serviceType.available_units);
+    setUnit(serviceType.available_units[0]);
+  };
+
   // price
   const [price, setPrice] = useState(null);
 
   // units of measurement
-  const units = ["m2", "hour"];
-  const [unit, setUnit] = useState(units[0]);
+  const [availableUnits, setAvailableUnits] = useState([]);
+  const [unit, setUnit] = useState(null);
   const [isUnitSelecting, setIsUnitSelecting] = useState(false);
 
   // address
@@ -331,7 +338,7 @@ export default function ServiceRegister() {
                     key={serviceType.id}
                     type="button"
                     className="text-left p-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => setServiceType(serviceType)}
+                    onClick={() => handleServiceTypeSelection(serviceType)}
                   >
                     {serviceType.name}
                   </button>
@@ -372,7 +379,7 @@ export default function ServiceRegister() {
 
                 {isUnitSelecting && (
                   <div className="absolute left-0 top-[50px] w-full max-h-[120px] shadow-2xl flex flex-col bg-white z-50 rounded-lg overflow-y-auto">
-                    {units.map((selectedUnit) => (
+                    {availableUnits.map((selectedUnit) => (
                       <button
                         key={selectedUnit}
                         type="button"

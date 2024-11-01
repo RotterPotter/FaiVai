@@ -1,5 +1,5 @@
 from pydantic import BaseModel, conlist
-from typing import List, Union, Dict
+from typing import List, Union, Dict, Optional
 from datetime import datetime
 
 class ServiceCreate(BaseModel):
@@ -8,7 +8,7 @@ class ServiceCreate(BaseModel):
     service_type_id: int
     unit: str
     price_per_unit: str
-    speed_per_unit: int
+    speed_per_unit: Optional[str]
     location_or_zone: Union[List[float], None]
     available_datetimes: Dict[str, List[List[str]]]  
 
@@ -17,7 +17,7 @@ class ServiceReturn(BaseModel):
     service_type_id: int
     unit: str
     price_per_unit: float
-    speed_per_unit: float
+    speed_per_unit: Optional[float]
     location_or_zone: str
     disabled: bool
     available_datetimes: List[List[datetime]]
@@ -32,10 +32,21 @@ class ServiceSpecifiedReturn(BaseModel):
     service_type_name: str
     unit: str
     price_per_unit: float
-    speed_per_unit: float
+    speed_per_unit: Optional[float]
     location_or_zone: str
     available_datetimes: List[List[datetime]]
     created_at: datetime
 
 class ServiceByOwner(BaseModel):
     owner_id: str
+
+
+class ServicesFilter(BaseModel):
+    category_name: Optional[str]
+    service_type_name: Optional[str]
+    location_or_zone: Optional[str]
+    min_price: Optional[float] 
+    max_price: Optional[float]
+    unit: Optional[str]
+    work_quantity: Optional[int]
+    

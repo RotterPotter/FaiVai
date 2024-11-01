@@ -1,3 +1,4 @@
+import json
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from sqlalchemy import create_engine
 from config import settings
@@ -23,35 +24,37 @@ def connect():
     # Bind engine to the class of sessions
     DBSession = sessionmaker(bind=db_engine)
 
+    # Load initial data from JSON file
+    with open('initial_data.json') as f:
+        initial_data = json.load(f)
+
     # Create admin user
     from auth.models import User
     from auth.service import hash_password 
-    from datetime import datetime
     db_session = DBSession()
-    admin = User(email='admin@gmail.com', hashed_password=hash_password('admin'), email_verified=True, firstname='Admin', lastname='Admin')
+    admin_data = initial_data['admin']
+    admin = User(
+        email=admin_data['email'],
+        hashed_password=hash_password(admin_data['password']),
+        email_verified=admin_data['email_verified'],
+        firstname=admin_data['firstname'],
+        lastname=admin_data['lastname']
+    )
     db_session.add(admin)
 
     # Create default categories
     from categories.models import Category
-    categories = ['Cleaning', 'Plumbing', 'Electrical', 'Carpentry', 'Gardening', 'Painting', 'Moving', 'Delivery', 'Handyman']
-    for category in categories:
+    for category in initial_data['categories']:
         db_session.add(Category(name=category))
 
     # Create default service types
     from service_types.models import ServiceType
-    service_types = [
-        {'name': 'House Cleaning', 'category_id': 1, 'available_units': ['Hour', 'Room']},
-        {'name': 'Drain Cleaning', 'category_id': 2, 'available_units': ['Hour']},
-        {'name': 'Electrical Installation', 'category_id': 3, 'available_units': ['Hour']},
-        {'name': 'Furniture Assembly', 'category_id': 4, 'available_units': ['Hour']},
-        {'name': 'Lawn Mowing', 'category_id': 5, 'available_units': ['Hour']},
-        {'name': 'Interior Painting', 'category_id': 6, 'available_units': ['Hour']},
-        {'name': 'Moving', 'category_id': 7, 'available_units': ['Hour']},
-        {'name': 'Delivery', 'category_id': 8, 'available_units': ['Hour']},
-        {'name': 'Handyman', 'category_id': 9, 'available_units': ['Hour']}
-    ]
-    for service_type in service_types:
-        db_session.add(ServiceType(name=service_type['name'], category_id=service_type['category_id'], available_units=service_type['available_units']))
+    for service_type in initial_data['service_types']:
+        db_session.add(ServiceType(
+            name=service_type['name'],
+            category_id=service_type['category_id'],
+            available_units=service_type['available_units']
+        ))
 
     db_session.commit()
 
