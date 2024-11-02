@@ -3,6 +3,7 @@ import ArrowSVG from "../assets/SVG/ArrowSVG";
 import { useState, lazy, Suspense } from "react";
 import { set } from "date-fns";
 import LoadingUI from "../components/LoadingUI";
+import GreenCircle from "../assets/SVG/GreenCircleSVG";
 
 const CleaningSpecification = lazy(() =>
   import("../components/category_specifications/CleaningSpecification")
@@ -54,7 +55,48 @@ export default function FindService() {
   const handleServiceTypeSelection = (serviceType) => {
     setServiceType(serviceType);
     setAvailableUnits(serviceType.available_units);
+    setUnit(serviceType.available_units[0]);
     console.log(availableUnits);
+  };
+
+  // location
+  const [selectingMode, setSelecingMode] = useState("address");
+  const [address, setAddress] = useState(null);
+
+  const handleModeChange = (e) => {
+    if (e === "address") {
+      setSelecingMode("address");
+    } else if (e === "zone") {
+      setSelecingMode("zone");
+    }
+  };
+
+  // date
+  const now = new Date();
+  const [date, setDate] = useState(null);
+  const [daysInCurrentMonth, setDaysInCurrentMonth] = useState(null);
+  const [selectedYear, setSelectedYear] = useState(now.getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(now.getMonth() + 1);
+  const [selectedDay, setSelectedDay] = useState(null);
+
+  function getDaysInMonth(year, month) {
+    // Create a date object for the first day of the next month
+    const nextMonth = new Date(year, month, 1);
+
+    // Subtract one day to get the last day of the specified month
+    const lastDayOfMonth = new Date(
+      nextMonth.getFullYear(),
+      nextMonth.getMonth(),
+      0
+    );
+
+    // Extract the day, which is the number of days in the specified month
+    return lastDayOfMonth.getDate();
+  }
+
+  // create range from number
+  const createRange = (num) => {
+    return Array.from({ length: num }, (_, i) => i + 1);
   };
 
   // button clicks
@@ -67,8 +109,22 @@ export default function FindService() {
       setErrors("Please select a service type");
       return;
     }
+    if (stage === 2 && !workQuantity) {
+      setErrors("Please type work quantity");
+      return;
+    }
+    if (stage === 3 && !address) {
+      setErrors("Please type your location");
+      return;
+    }
+
     setStage(stage + 1);
+    console.log(stage);
     setErrors(null);
+  };
+  const handleDaySelection = (day) => {
+    setSelectedDay(day);
+    handleContinueButtonClick();
   };
 
   // loading UI
@@ -95,7 +151,7 @@ export default function FindService() {
       <form
         action="POST"
         className={`relative flex flex-col items-center w-full sm:max-w-[500px] space-y-3 border border-black/15 shadow-2xl px-20 py-9 rounded-3xl
-            ${isLoading ? "opacity-100" : ""}`}
+          ${isLoading ? "opacity-100" : ""}`}
         onSubmit={(e) => {
           e.preventDefault();
         }}
@@ -209,19 +265,101 @@ export default function FindService() {
             )}
           </div>
         )}
+        {stage === 3 && (
+          <div className="w-full flex flex-col justify-center items-center gap-5 ">
+            <span className="text-2xl font-medium pb-8">
+              Type your location
+            </span>
+            <div className="w-full">
+              <div className="w-full flex items-center gap-10 justify-center -mt-8 pb-5 text-lg ">
+                <button
+                  type="button"
+                  onClick={() => handleModeChange("address")}
+                  className={`flex flex-col justify-center items-center hover:text-green-600  ${
+                    selectingMode === "address" ? "text-black" : "text-gray-500"
+                  }`}
+                >
+                  Address
+                  <GreenCircle
+                    active={selectingMode === "address" ? "true" : ""}
+                  ></GreenCircle>
+                </button>
+                <span className="text-xl">|</span>
+                <button
+                  type="button"
+                  onClick={() => handleModeChange("zone")}
+                  className={`flex flex-col justify-center items-center hover:text-green-500  ${
+                    selectingMode === "zone" ? "text-black" : "text-gray-500"
+                  }`}
+                >
+                  Zone
+                  <GreenCircle
+                    active={selectingMode === "zone" ? "true" : ""}
+                  ></GreenCircle>
+                </button>
+              </div>
+              {selectingMode === "address" && (
+                <input
+                  required
+                  type="text"
+                  name="address"
+                  placeholder="Type address"
+                  className="input-reset w-full h-[50px] rounded-full p-4"
+                  value={address === null ? "" : address}
+                  onChange={(y) =>
+                    setAddress(y.target.value === "" ? null : y.target.value)
+                  }
+                />
+              )}
+
+              {selectingMode === "zone" && (
+                <div className="w-full flex justify-center items-center pb-5">
+                  <button
+                    type="button"
+                    className="border px-3 py-2 rounded-full shadow-lg hover:border-green-500 active:shadow-none"
+                  >
+                    Draw your zone
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        {stage === 4 && (
+          <div className="w-full flex flex-col justify-center items-center gap-5 ">
+            <span className="text-2xl font-medium pb-8">Select date</span>
+            <div className="w-full">
+              <div className="flex flex-wrap w-full jsutify-center items-center ">
+                {createRange(getDaysInMonth(selectedYear, selectedMonth)).map(
+                  (day) => (
+                    <button
+                      className="rounded-full px-2 py-1 transition-colora duration-100  hover:bg-green-500  hover:text-white text-lg w-1/7"
+                      type="button"
+                      onClick={() => handleDaySelection(day)}
+                    >
+                      {day}
+                    </button>
+                  )
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {errors && (
           <span className="w-full text-left p-0 m-0 text-red-500 px-5">
             {errors}
           </span>
         )}
-        <button
-          type="button"
-          onClick={handleContinueButtonClick}
-          className="shadow-xl active:shadow-none btn-primary w-full h-[50px] rounded-full p-4  text-white bg-green-500"
-        >
-          Continue
-        </button>
+        {stage != 4 && (
+          <button
+            type="button"
+            onClick={handleContinueButtonClick}
+            className="shadow-xl active:shadow-none btn-primary w-full h-[50px] rounded-full p-4  text-white bg-green-500"
+          >
+            Continue
+          </button>
+        )}
       </form>
     </div>
   );

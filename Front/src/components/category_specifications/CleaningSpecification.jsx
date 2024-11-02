@@ -21,7 +21,7 @@ export default function CleaningSpecification({
           required
           type="number"
           name="workQuantity"
-          placeholder={`Duration per ${unit}`}
+          placeholder={`Type quantity`}
           className="input-reset w-2/3 h-[50px] rounded-full p-4"
           value={workQuantity === null ? "" : workQuantity}
           onChange={(e) =>

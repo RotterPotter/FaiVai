@@ -21,7 +21,7 @@
     {
       "name": "House Cleaning",
       "category_id": 1,
-      "available_units": ["Hour", "Room"]
+      "available_units": ["m2"]
     },
     { "name": "Drain Cleaning", "category_id": 2, "available_units": ["Hour"] },
     {

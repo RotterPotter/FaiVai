@@ -38,6 +38,7 @@ export default function UserProvider(props) {
 
   useEffect(() => {
     localStorage.setItem("language", language);
+    console.log("refreshed");
   }),
     [language];
 
