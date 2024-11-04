@@ -12,7 +12,7 @@ const CleaningSpecification = lazy(() =>
 export default function FindService() {
   // page
   const [isLoading, setIsLoading] = useState(false);
-  const [stage, setStage] = useState(0);
+  const [stage, setStage] = useState(4);
 
   // errors
   const [errors, setErrors] = useState();
@@ -94,6 +94,46 @@ export default function FindService() {
     return lastDayOfMonth.getDate();
   }
 
+  function getMonthName(monthNumber) {
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    return monthNames[monthNumber - 1];
+  }
+
+  // time
+  const timeFromRef = React.createRef();
+
+  const handleMonthChange = (direction) => {
+    if (direction === "left") {
+      if (selectedMonth === 1) {
+        setSelectedMonth(12);
+        setSelectedYear(selectedYear - 1);
+      } else {
+        setSelectedMonth(selectedMonth - 1);
+      }
+    } else if (direction === "right") {
+      if (selectedMonth === 12) {
+        setSelectedMonth(1);
+        setSelectedYear(selectedYear + 1);
+      } else {
+        setSelectedMonth(selectedMonth + 1);
+      }
+    }
+  };
+
   // create range from number
   const createRange = (num) => {
     return Array.from({ length: num }, (_, i) => i + 1);
@@ -146,14 +186,44 @@ export default function FindService() {
     }, 1000);
   }, [stage]);
 
+  const getFilteredServices = async () => {
+    setIsLoading(true);
+    try {
+      console.log(typeof availbaldeDaysAndHours);
+      const response = await fetch("http://localhost:8000/services/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          service_type_id: serviceType.id,
+          location_or_zone: address,
+          date: date,
+          time_from: timeFromRef.current.value,
+        }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+      } else {
+        const data = await response.json();
+        setErrors(data.message);
+      }
+    } catch (error) {
+      setErrors(error.message);
+    }
+    setIsLoading(false);
+  };
+
   return (
-    <div className="flex justify-center items-center mt-[100px]">
+    <div className=" w-full h-screen -mt-[100px] flex justify-center items-center ">
       <form
         action="POST"
         className={`relative flex flex-col items-center w-full sm:max-w-[500px] space-y-3 border border-black/15 shadow-2xl px-20 py-9 rounded-3xl
           ${isLoading ? "opacity-100" : ""}`}
         onSubmit={(e) => {
           e.preventDefault();
+          getFilteredServices();
         }}
       >
         {isLoading && <LoadingUI></LoadingUI>}
@@ -327,9 +397,30 @@ export default function FindService() {
         )}
         {stage === 4 && (
           <div className="w-full flex flex-col justify-center items-center gap-5 ">
-            <span className="text-2xl font-medium pb-8">Select date</span>
-            <div className="w-full">
-              <div className="flex flex-wrap w-full jsutify-center items-center ">
+            <span className="text-2xl font-medium pb-8">Select a date</span>
+            <div className="w-full min-h-[250px]">
+              <div className="w-full flex justify-center items-center gap-3 mb-5 text-lg">
+                <button
+                  type="button"
+                  onClick={() => handleMonthChange("left")}
+                  className=""
+                >
+                  <ArrowSVG degree={90}></ArrowSVG>
+                </button>
+                <div className="text-center w-[170px] flex items-center justify-center gap-2">
+                  <span>{getMonthName(selectedMonth)}</span>
+                  <span>{selectedYear}</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleMonthChange("right")}
+                  className=""
+                >
+                  <ArrowSVG degree={-90}></ArrowSVG>
+                </button>
+              </div>
+              <div className="flex flex-wrap w-full jsutify-start items-start   ">
                 {createRange(getDaysInMonth(selectedYear, selectedMonth)).map(
                   (day) => (
                     <button
@@ -345,19 +436,44 @@ export default function FindService() {
             </div>
           </div>
         )}
+        {stage === 5 && (
+          <div className="w-full flex flex-col justify-center items-center gap-5 ">
+            <span className="text-2xl font-medium pb-8">
+              Select started time
+            </span>
+            <div className="flex justify-center items-center gap-4 border p-2 m-1 rounded-2xl border-green-500">
+              <div className="flex flex-col items-center">
+                <span className="mb-2 text-gray-600">From</span>
+                <input
+                  type="time"
+                  ref={timeFromRef}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+            </div>
+          </div>
+        )}
 
         {errors && (
           <span className="w-full text-left p-0 m-0 text-red-500 px-5">
             {errors}
           </span>
         )}
-        {stage != 4 && (
+        {stage < 4 && (
           <button
             type="button"
             onClick={handleContinueButtonClick}
             className="shadow-xl active:shadow-none btn-primary w-full h-[50px] rounded-full p-4  text-white bg-green-500"
           >
             Continue
+          </button>
+        )}
+        {stage == 5 && (
+          <button
+            type="submit"
+            className="shadow-xl active:shadow-none btn-primary w-full h-[50px] rounded-full p-4  text-white bg-green-500"
+          >
+            Find
           </button>
         )}
       </form>

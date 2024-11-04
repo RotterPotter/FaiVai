@@ -42,11 +42,13 @@ class ServiceByOwner(BaseModel):
 
 
 class ServicesFilter(BaseModel):
-    category_name: Optional[str]
-    service_type_name: Optional[str]
+    service_type_id: Optional[int]
     location_or_zone: Optional[str]
-    min_price: Optional[float] 
-    max_price: Optional[float]
     unit: Optional[str]
     work_quantity: Optional[int]
+
+    date: Optional[datetime]
+    time_from: Optional[str]
+
+
     
