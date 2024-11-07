@@ -216,14 +216,14 @@ def create_datetime_ranges(day_of_a_week: str, quantity: int, from_time: str, to
     return datetime_ranges
 
 
-@router.get('/filter', status_code=status.HTTP_200_OK)
+@router.post('/filter', status_code=status.HTTP_200_OK)
 async def get_filtered_services(filter_schema: services.schemas.ServicesFilter, db_session: Session = Depends(database.get_db)):
   filtered_services =  []
   services_in_db = db_session.query(services.models.Service).filter_by(service_type_id=filter_schema.service_type_id).all()
 
   for service in services_in_db:
-    if not service.location_or_zone == convert_location_or_zone(filter_schema.location_or_zone):
-      continue
+    # if not service.location_or_zone == convert_location_or_zone(filter_schema.location_or_zone):
+    #   continue
     if not service.unit == filter_schema.unit:
       continue
     if not check_availability(service, filter_schema.date, filter_schema.time):
@@ -235,4 +235,4 @@ def convert_location_or_zone():
   pass
 
 def check_availability(service: services.models.Service, date: datetime.datetime, time_from: str) -> bool:
-  pass
+  return True

@@ -12,7 +12,7 @@ const CleaningSpecification = lazy(() =>
 export default function FindService() {
   // page
   const [isLoading, setIsLoading] = useState(false);
-  const [stage, setStage] = useState(4);
+  const [stage, setStage] = useState(0);
 
   // errors
   const [errors, setErrors] = useState();
@@ -190,14 +190,14 @@ export default function FindService() {
     setIsLoading(true);
     try {
       console.log(typeof availbaldeDaysAndHours);
-      const response = await fetch("http://localhost:8000/services/create", {
+      const response = await fetch("http://localhost:8000/services/filter", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           service_type_id: serviceType.id,
-          location_or_zone: address,
+          location_or_zone: [],
           date: date,
           time_from: timeFromRef.current.value,
         }),

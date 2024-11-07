@@ -1,4 +1,4 @@
-from pydantic import BaseModel, conlist
+from pydantic import BaseModel, conlist, Field
 from typing import List, Union, Dict, Optional
 from datetime import datetime
 
@@ -42,13 +42,12 @@ class ServiceByOwner(BaseModel):
 
 
 class ServicesFilter(BaseModel):
-    service_type_id: Optional[int]
-    location_or_zone: Optional[str]
-    unit: Optional[str]
-    work_quantity: Optional[int]
-
-    date: Optional[datetime]
-    time_from: Optional[str]
+    service_type_id: Optional[int] = Field(None, description="ID of the service type")
+    location_or_zone: Optional[List[str]] = Field(None, description="Location or zone of the service")
+    unit: Optional[str] = Field(None, description="Unit of the service")
+    work_quantity: Optional[int] = Field(None, description="Quantity of work")
+    date: Optional[datetime] = Field(None, description="Date of the service")
+    time_from: Optional[str] = Field(None, description="Start time of the service in HH:MM format")
 
 
     

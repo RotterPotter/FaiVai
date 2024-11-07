@@ -24,10 +24,7 @@ export default function FindJobs() {
           name="Find Services "
           navigateTo={"/services/find"}
         ></FirstButton>
-        <FirstButton
-          name="Find workers"
-          navigateTo={"service/find-workers/"}
-        ></FirstButton>
+
         <FirstButton
           name="Your services"
           navigateTo={"/your_services"}
