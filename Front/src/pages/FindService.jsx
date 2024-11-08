@@ -187,19 +187,32 @@ export default function FindService() {
   }, [stage]);
 
   const getFilteredServices = async () => {
+    let hours = timeFromRef.current.value.split(":")[0];
+    const minutes = timeFromRef.current.value.split(":")[1];
+    if (hours[0] === "0") {
+      hours = hours[1];
+    }
     setIsLoading(true);
     try {
       console.log(typeof availbaldeDaysAndHours);
-      const response = await fetch("http://localhost:8000/services/filter", {
+      const response = await fetch("http://localhost:8000/services/find", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           service_type_id: serviceType.id,
-          location_or_zone: [],
-          date: date,
-          time_from: timeFromRef.current.value,
+          location_type: selectingMode,
+          location_or_zone: address,
+          unit,
+          work_quantity: workQuantity,
+          year_month_day_hours_minutes: [
+            selectedYear,
+            selectedMonth,
+            selectedDay,
+            hours,
+            minutes,
+          ],
         }),
       });
       if (response.ok) {

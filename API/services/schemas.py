@@ -49,5 +49,28 @@ class ServicesFilter(BaseModel):
     date: Optional[datetime] = Field(None, description="Date of the service")
     time_from: Optional[str] = Field(None, description="Start time of the service in HH:MM format")
 
+class FindServices(BaseModel):
+    service_type_id: int
+    location_type: str
+    location_or_zone: str
+    unit: str
+    work_quantity: int
+    year_month_day_hours_minutes: List[int]  # [year, month, day, hours, minutes] - datetime from
+
+class FindServicesReturn(BaseModel):
+    owner_id: int
+    owner_firstname: str
+    owner_lastname: str
+    owner_rating: float
+    owner_reviews_count: int
+    price: int
+    job_duration: int
+    location_or_zone: str
+
+
+
+
+
+
 
     

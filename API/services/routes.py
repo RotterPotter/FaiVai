@@ -216,23 +216,54 @@ def create_datetime_ranges(day_of_a_week: str, quantity: int, from_time: str, to
     return datetime_ranges
 
 
-@router.post('/filter', status_code=status.HTTP_200_OK)
-async def get_filtered_services(filter_schema: services.schemas.ServicesFilter, db_session: Session = Depends(database.get_db)):
-  filtered_services =  []
-  services_in_db = db_session.query(services.models.Service).filter_by(service_type_id=filter_schema.service_type_id).all()
+@router.post('/find', status_code=status.HTTP_200_OK) 
+async def find_services(schema: services.schemas.FindServices, db_session: Session = Depends(database.get_db)):
+  services_to_return = []
+  services_by_service_type_id = db_session.query(services.models.Service).filter_by(service_type_id=schema.service_type_id).all()
+  location = ''
 
-  for service in services_in_db:
-    # if not service.location_or_zone == convert_location_or_zone(filter_schema.location_or_zone):
-    #   continue
-    if not service.unit == filter_schema.unit:
+  if schema.location_type == 'online':
+    location = 'online'
+  elif schema.location_type == 'onsite':
+    location = 'Your location'
+  elif schema.location_type == 'zone' or 'location':
+    location = schema.location_or_zone
+
+  for service in services_by_service_type_id:
+    # check location
+    if service.location_or_zone != schema.location_or_zone:
       continue
-    if not check_availability(service, filter_schema.date, filter_schema.time):
+    date_from = datetime.datetime(*schema.year_month_day_hours_minutes)
+    # check date
+    job_duration = int(service.speed_per_unit * schema.work_quantity) # in minutes
+    if not check_worker_availability(service.available_datetimes, date_from, job_duration):
       continue
-    filtered_services.append(service)
-  return filtered_services
 
-def convert_location_or_zone():
-  pass
+    services_to_return.append(services.schemas.FindServicesReturn(
+      owner_id=service.owner_id,
+      owner_firstname=service.owner.firstname,
+      owner_lastname=service.owner.lastname,
+      owner_rating=service.owner.rating,
+      owner_reviews_count=len(service.owner.received_reviews),
+      price=service.price_per_unit * schema.work_quantity,
+      job_duration=job_duration,
+      location_or_zone=location
+    ))
 
-def check_availability(service: services.models.Service, date: datetime.datetime, time_from: str) -> bool:
-  return True
+  return services_to_return
+    
+
+  
+
+def check_worker_availability(available_datetimes: List[datetime.datetime], date_from: datetime.datetime, job_duration: int) -> bool:
+  date_now = datetime.datetime.now()
+  for date in available_datetimes:
+    if (date[0] - date_now) >= 0:
+      if (date_from - date[0]) >= 0:
+        if (date[1] - date_from) >= job_duration:
+          return True
+  return False
+
+  
+
+

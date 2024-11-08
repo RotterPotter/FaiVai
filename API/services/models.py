@@ -18,7 +18,7 @@ class Service(Base):
 
     unit: orm.Mapped[str]
     price_per_unit: orm.Mapped[float]
-    speed_per_unit: orm.Mapped[Optional[float]] = orm.mapped_column(default=None)
+    speed_per_unit: orm.Mapped[Optional[float]] = orm.mapped_column(default=None) # in minutes
     location_or_zone: orm.Mapped[str]
     disabled: orm.Mapped[bool] = orm.mapped_column(default=False)
     available_datetimes: orm.Mapped[List[List[datetime]]] = orm.mapped_column(ARRAY(DateTime))
