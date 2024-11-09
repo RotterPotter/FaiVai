@@ -2,7 +2,7 @@ import uvicorn
 import fastapi
 from fastapi.middleware.cors import CORSMiddleware
 from auth.routes import router as auth_router
-from offers.routes import router as offers_router
+
 from services.routes import router as services_router
 from service_types.routes import router as service_types_router
 from categories.routes import router as categories_router
@@ -21,7 +21,6 @@ app.add_middleware(
 )
 
 app.include_router(auth_router)
-app.include_router(offers_router)
 app.include_router(services_router)
 app.include_router(service_types_router)
 app.include_router(categories_router)

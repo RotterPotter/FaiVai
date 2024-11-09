@@ -203,7 +203,6 @@ export default function ServiceRegister() {
         },
         body: JSON.stringify({
           owner_id: localStorage.getItem("user_id"),
-          category: category.name,
           service_type_id: serviceType.id,
           price_per_unit: price,
           unit,
