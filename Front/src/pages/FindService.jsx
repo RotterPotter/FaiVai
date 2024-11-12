@@ -4,6 +4,7 @@ import { useState, lazy, Suspense } from "react";
 import { set } from "date-fns";
 import LoadingUI from "../components/LoadingUI";
 import GreenCircle from "../assets/SVG/GreenCircleSVG";
+import { useNavigate } from "react-router-dom";
 
 const CleaningSpecification = lazy(() =>
   import("../components/category_specifications/CleaningSpecification")
@@ -13,6 +14,7 @@ export default function FindService() {
   // page
   const [isLoading, setIsLoading] = useState(false);
   const [stage, setStage] = useState(0);
+  const navigate = useNavigate()
 
   // errors
   const [errors, setErrors] = useState();
@@ -192,40 +194,22 @@ export default function FindService() {
     if (hours[0] === "0") {
       hours = hours[1];
     }
-    setIsLoading(true);
-    try {
-      console.log(typeof availbaldeDaysAndHours);
-      const response = await fetch("http://localhost:8000/services/find", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          service_type_id: serviceType.id,
-          location_type: selectingMode,
-          location_or_zone: address,
-          unit,
-          work_quantity: workQuantity,
-          year_month_day_hours_minutes: [
-            selectedYear,
-            selectedMonth,
-            selectedDay,
-            hours,
-            minutes,
-          ],
-        }),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-      } else {
-        const data = await response.json();
-        setErrors(data.message);
-      }
-    } catch (error) {
-      setErrors(error.message);
-    }
-    setIsLoading(false);
+    localStorage.setItem("service_type_id", serviceType.id);
+    localStorage.setItem("location_type", selectingMode);
+    localStorage.setItem("location_or_zone", address);
+    localStorage.setItem("unit", unit);
+    localStorage.setItem("work_quantity", workQuantity);
+    localStorage.setItem(
+      "year_month_day_hours_minutes",
+      JSON.stringify([
+        selectedYear,
+        selectedMonth,
+        selectedDay,
+        hours,
+        minutes,
+      ])
+    );
+    navigate("/services/find/catalog")
   };
 
   return (

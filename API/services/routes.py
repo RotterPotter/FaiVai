@@ -235,8 +235,8 @@ async def find_services(schema: services.schemas.FindServices, db_session: Sessi
 
     for service in services_by_service_type_id:
         # check location
-        # if service.location_or_zone != schema.location_or_zone:
-        #     continue
+        if service.location_or_zone != location:
+            continue
         date_from = datetime.datetime(*schema.year_month_day_hours_minutes)
         # check date
         job_duration = int(service.speed_per_unit *
@@ -244,15 +244,22 @@ async def find_services(schema: services.schemas.FindServices, db_session: Sessi
         if not check_worker_availability(service.available_schedule, service.available_specific_datetime_ranges, date_from, job_duration):
             continue
 
-        services_to_return.append(services.schemas.FindServicesReturn(
-            owner_id=service.owner_id,
+        
+        services_to_return.append(services.schemas.ServiceSpecifiedReturn(
+            id=service.id,
             owner_firstname=service.owner.firstname,
             owner_lastname=service.owner.lastname,
             owner_rating=service.owner.rating,
             owner_reviews_count=len(service.owner.received_reviews),
-            price=service.price_per_unit * schema.work_quantity,
-            job_duration=job_duration,
-            location_or_zone=location
+            category_name=service.service_type.category.name,
+            service_type_name=service.service_type.name,
+            unit=service.unit,
+            price_per_unit=service.price_per_unit,
+            speed_per_unit=service.speed_per_unit,
+            location_or_zone=service.location_or_zone,
+            available_schedule=service.available_schedule,
+            available_specific_datetime_ranges=service.available_specific_datetime_ranges,
+            created_at=service.created_at
         ))
 
     return services_to_return

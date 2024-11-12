@@ -39,7 +39,7 @@ class ServiceSpecifiedReturn(BaseModel):
     speed_per_unit: Optional[float]
     location_or_zone: str
     available_schedule: Dict[str, List[List[str]]]
-    available_specific_datetime_ranges: List[datetime]
+    available_specific_datetime_ranges: List[List[datetime]]
     created_at: datetime
 
 
