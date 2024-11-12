@@ -9,8 +9,9 @@ class ServiceCreate(BaseModel):
     unit: str
     price_per_unit: str
     speed_per_unit: Optional[str]
-    location_or_zone: Union[List[float], None]
-    available_datetimes: Dict[str, List[List[str]]]
+    location_or_zone: str
+    available_schedule: Dict[str, List[List[str]]]
+    available_specific_datetime_ranges: Union[List[datetime], None]
 
 
 class ServiceReturn(BaseModel):
@@ -21,7 +22,8 @@ class ServiceReturn(BaseModel):
     speed_per_unit: Optional[float]
     location_or_zone: str
     disabled: bool
-    available_datetimes: List[List[datetime]]
+    available_schedule: Dict[str, List[List[str]]]
+    available_specific_datetime_ranges: List[datetime]
 
 
 class ServiceSpecifiedReturn(BaseModel):
@@ -36,7 +38,8 @@ class ServiceSpecifiedReturn(BaseModel):
     price_per_unit: float
     speed_per_unit: Optional[float]
     location_or_zone: str
-    available_datetimes: List[List[datetime]]
+    available_schedule: Dict[str, List[List[str]]]
+    available_specific_datetime_ranges: List[datetime]
     created_at: datetime
 
 

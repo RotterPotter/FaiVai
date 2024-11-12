@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Optional, Dict
 from sqlalchemy import  ForeignKey,  DateTime, ARRAY, JSON
 import sqlalchemy.orm as orm
 from database import Base
@@ -21,7 +21,9 @@ class Service(Base):
     speed_per_unit: orm.Mapped[Optional[float]] = orm.mapped_column(default=None) # in minutes
     location_or_zone: orm.Mapped[str]
     disabled: orm.Mapped[bool] = orm.mapped_column(default=False)
-    available_datetimes: orm.Mapped[List[List[datetime]]] = orm.mapped_column(ARRAY(DateTime))
+    # available_datetimes: orm.Mapped[List[List[datetime]]] = orm.mapped_column(ARRAY(DateTime))
+    available_schedule: orm.Mapped[Dict[str, List[List[str]]]] = orm.mapped_column(JSON)
+    available_specific_datetime_ranges: orm.Mapped[List[List[datetime]]] = orm.mapped_column(ARRAY(DateTime), default=[])
     created_at: orm.Mapped[datetime] = orm.mapped_column(DateTime, default=datetime.now)
 
     owner: orm.Mapped["User"] =  orm.relationship("User", back_populates="services")

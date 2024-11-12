@@ -207,8 +207,9 @@ export default function ServiceRegister() {
           price_per_unit: price,
           unit,
           speed_per_unit: duration,
-          location_or_zone: [0],
-          available_datetimes: availbaldeDaysAndHours,
+          location_or_zone: address,
+          available_schedule: availbaldeDaysAndHours,
+          available_specific_datetime_ranges: null,
         }),
       });
 

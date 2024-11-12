@@ -7,10 +7,14 @@ import categories.models
 import service_types.models
 import database
 import datetime
-from typing import List
+from typing import List, Dict
 from sqlalchemy import or_
+import random
 
 router = APIRouter(prefix='/services', tags=['services'])
+
+WEEKDAYS = ["monday", "tuesday", "wednesday",
+            "thursday", "friday", "saturday", "sunday"]
 
 
 @router.get('/all', status_code=status.HTTP_200_OK)
@@ -38,33 +42,13 @@ async def get_services_by_owner(schema: services.schemas.ServiceByOwner, db_sess
             price_per_unit=service.price_per_unit,
             speed_per_unit=service.speed_per_unit,
             location_or_zone=service.location_or_zone,
-            available_datetimes=service.available_datetimes,
+            available_schedule=service.available_schedule,
+            available_specific_datetime_ranges=service.available_specific_datetime_ranges,
             created_at=service.created_at
         )
         specified_services.append(specified_service)
 
     return specified_services
-
-
-@router.post('/create_test_data', status_code=status.HTTP_201_CREATED)
-async def create_test_data(quantity: int, db_session: Session = Depends(database.get_db)):
-    for _ in range(quantity):
-        owner = db_session.query(auth.models.User).first()
-        service_type = db_session.query(
-            service_types.models.ServiceType).first()
-        service = services.models.Service(
-            owner=owner,
-            service_type=service_type,
-            price_per_unit=10.0,
-            unit='GB',
-            speed_per_unit=1,
-            location_or_zone='Nairobi',
-            available_datetimes=create_schedule(
-                data={'monday': [['08:00', '09:00'], ['10:00', '11:00']]}, quantity=7)
-        )
-        db_session.add(service)
-        db_session.commit()
-    return {"detail": "Test data created"}
 
 
 @router.post('/create', status_code=status.HTTP_201_CREATED)
@@ -91,9 +75,10 @@ async def create_service(
         unit=service_schema.unit,
         speed_per_unit=service_schema.speed_per_unit,
         location_or_zone=service_schema.location_or_zone,
-        available_datetimes=create_schedule(
-            data=service_schema.available_datetimes, quantity=4)
+        available_schedule=service_schema.available_schedule,
     )
+    if service_schema.available_specific_datetime_ranges:
+        service.available_specific_datetime_ranges = service_schema.available_specific_datetime_ranges
 
     db_session.add(service)
     db_session.commit()
@@ -121,7 +106,8 @@ async def get_service(service_id: int, db_session: Session = Depends(database.ge
         price_per_unit=service.price_per_unit,
         speed_per_unit=service.speed_per_unit,
         location_or_zone=service.location_or_zone,
-        available_datetimes=service.available_datetimes,
+        available_schedule=service.available_schedule,
+        available_specific_datetime_ranges=service.available_specific_datetime_ranges,
         created_at=service.created_at
     )
 
@@ -182,14 +168,14 @@ async def update_service(
 
 
 # list of lists from two values (list of ranges [from datetime, to datetime])
-def create_schedule(data: dict, quantity: int) -> list:
-    datetimes = []
-    for day, time_list in data.items():
-        for time_range in time_list:
-            ranges = create_datetime_ranges(
-                day, quantity, time_range[0], time_range[1])
-            datetimes.extend(ranges)
-    return datetimes
+# def create_schedule(data: dict, quantity: int) -> list:
+#     datetimes = []
+#     for day, time_list in data.items():
+#         for time_range in time_list:
+#             ranges = create_datetime_ranges(
+#                 day, quantity, time_range[0], time_range[1])
+#             datetimes.extend(ranges)
+#     return datetimes
 
 
 def create_datetime_ranges(day_of_a_week: str, quantity: int, from_time: str, to_time: str) -> List[List[datetime.datetime]]:
@@ -249,13 +235,13 @@ async def find_services(schema: services.schemas.FindServices, db_session: Sessi
 
     for service in services_by_service_type_id:
         # check location
-        if service.location_or_zone != schema.location_or_zone:
-            continue
+        # if service.location_or_zone != schema.location_or_zone:
+        #     continue
         date_from = datetime.datetime(*schema.year_month_day_hours_minutes)
         # check date
         job_duration = int(service.speed_per_unit *
                            schema.work_quantity)  # in minutes
-        if not check_worker_availability(service.available_datetimes, date_from, job_duration):
+        if not check_worker_availability(service.available_schedule, service.available_specific_datetime_ranges, date_from, job_duration):
             continue
 
         services_to_return.append(services.schemas.FindServicesReturn(
@@ -272,11 +258,49 @@ async def find_services(schema: services.schemas.FindServices, db_session: Sessi
     return services_to_return
 
 
-def check_worker_availability(available_datetimes: List[datetime.datetime], date_from: datetime.datetime, job_duration: int) -> bool:
-    date_now = datetime.datetime.now()
-    for date in available_datetimes:
-        if (date[0] - date_now) >= 0:
-            if (date_from - date[0]) >= 0:
-                if (date[1] - date_from) >= job_duration:
+def check_worker_availability(available_schedule: Dict[str, List[List[str]]], available_specific_datetime_ranges: List[datetime.datetime], date_from: datetime.datetime, job_duration: int) -> bool:
+    # find a weekday of date_from
+    selected_weekday = WEEKDAYS[date_from.weekday()]
+    # find time ranges in available_datetimes dict by weekday
+    available_time_ranges = available_schedule.get(selected_weekday, [])
+    # check if date_from in time range and date_from + job_duration smaller then finish_date
+    for time_range in available_time_ranges:
+       
+        hours1 = int(time_range[0].split(':')[0])
+        min1 = int(time_range[0].split(':')[1])
+        hours2 = int(time_range[1].split(':')[0])
+        min2 = int(time_range[1].split(':')[1])
+
+        datetime1 = datetime.datetime(
+            date_from.year, date_from.month, date_from.day, hours1, min1)
+        datetime2 = datetime.datetime(
+            date_from.year, date_from.month, date_from.day, hours2, min2)
+
+        if (datetime1 <= date_from < datetime2) and ((datetime.timedelta(minutes=job_duration) + date_from) <= datetime2):
+            return True
+    if available_specific_datetime_ranges:
+        for specific_range in available_specific_datetime_ranges:
+            if specific_range[0] <= date_from < specific_range[1]:
+                end_time = date_from + datetime.timedelta(minutes=job_duration)
+                if end_time <= specific_range[1]:
                     return True
     return False
+
+
+@router.post('/create_fake_services', status_code=status.HTTP_200_OK)
+def create_fake_services(quanity: int,  db_session: Session = Depends(database.get_db)):
+    for _ in range(quanity):
+        owner = db_session.query(auth.models.User).filter_by(id=1).first()
+        service_type = db_session.query(
+            service_types.models.ServiceType).filter_by(id=1).first()
+        service = services.models.Service(
+            owner=owner,
+            service_type=service_type,
+            price_per_unit=10.0,
+            unit=service_type.available_units[0],
+            speed_per_unit=random.randint(1, 10),
+            location_or_zone='online',
+            available_schedule={'monday': [['08:00', '18:00']]})
+        db_session.add(service)
+        db_session.commit()
+    return db_session.query(services.models.Service).all()

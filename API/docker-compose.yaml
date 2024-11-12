@@ -1,4 +1,4 @@
-
+version: "3.8"
 
 services:
   python-app:
@@ -17,23 +17,48 @@ services:
       poetry install && 
       poetry run python3 main.py
       "
+    networks:
+      - mynetwork
 
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+    networks:
+      - mynetwork
 
   db:
     image: postgres:13
     restart: always
-    env_file:
-      - .env
-
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user123
+      POSTGRES_DB: mydatabase
     ports:
       - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mynetwork
 
-volumes:
-  postgres_data:
+  test:
+    image: python:3.9
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: >
+      /bin/bash -c "
+      python -m venv venv && 
+      source venv/bin/activate && 
+      pip install poetry && 
+      poetry config virtualenvs.in-project true && 
+      poetry install && 
+      poetry run pytest
+      "
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
