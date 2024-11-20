@@ -87,7 +87,7 @@ export default function Profile() {
             </div>
 
             <div className="text-lg flex flex-col justify-center items-start w-full ">
-              <span className="font-medium text-xl">Gloria Doe</span>
+              <span className=" font-semibold  ">Gloria Doe</span>
               <div className="flex  items-start text-xl  gap-1 w-full ">
                 <RatingStar starSize="24px" type={1}></RatingStar>
                 <span className=""> 4.5</span>
@@ -127,9 +127,9 @@ export default function Profile() {
           </div>
         </div>
         <div className="flex flex-col gap-5 w-full">
-          <div className="bg-white  border border-black h-[200px] w-full p-5 rounded-xl">
+          <div className="bg-white  border border-black lg:h-[200px] w-full p-5 rounded-xl">
             <div className=" text-lg font-semibold ">About</div>
-            <p className="p-1">
+            <p className="p-1 ">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod
               nobis voluptatibus, eligendi voluptatum assumenda possimus eaque
               accusantium quam nisi molestias perspiciatis? Placeat maiores
@@ -148,7 +148,7 @@ export default function Profile() {
               <div>sort</div>
             </div>
 
-            <div className="p-1 h-[400px] overflow-auto custom-scrollbar">
+            <div className="p-1 lg:h-[400px] lg:overflow-auto custom-scrollbar">
               {reviews.map((review) => (
                 <Review
                   key={review.authorId}
