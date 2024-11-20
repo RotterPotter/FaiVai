@@ -3,7 +3,7 @@ import SearchSVG from "../assets/SVG/SearchSVG";
 import Filter from "./Filter";
 import { useState, useEffect } from "react";
 
-export default function Search() {
+export default function Search({name}) {
   const [openFilter, setOpenFilter] = useState(null);
   const [location, setLocation] = useState("");
 
@@ -17,7 +17,7 @@ export default function Search() {
           name="location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          placeholder="Type location"
+          placeholder={name}
           className="w-full m-0 p-0 outline-none focus:placeholder-transparent"
         />
       </div>

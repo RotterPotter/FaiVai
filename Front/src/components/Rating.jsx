@@ -1,7 +1,7 @@
 import React from "react";
 import RatingStar from "./RatingStar";
 
-export default function Rating({ ratingScore, ratingQuantity }) {
+export default function Rating({ ratingScore, ratingQuantity, starSize }) {
   let stars = [];
 
   for (let i = 0; i < 5; i++) {
@@ -17,11 +17,15 @@ export default function Rating({ ratingScore, ratingQuantity }) {
   }
 
   return (
-    <div className="flex gap-1 items-center">
+    <div className="flex gap-1 items-center justify-center text-center">
       {stars.map((star) => {
-        return <RatingStar type={star}></RatingStar>;
+        return <RatingStar type={star} starSize={starSize}></RatingStar>;
       })}
-      <span className="text-black/70">({ratingQuantity})</span>
+        
+      {ratingQuantity && (
+        <span className={`text-black/70 text-[${starSize}] text-center`}>({ratingQuantity})</span>
+      )}
+      
     </div>
   );
 }

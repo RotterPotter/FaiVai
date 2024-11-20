@@ -78,3 +78,8 @@ class FindServicesReturn(BaseModel):
     price: int
     job_duration: int
     location_or_zone: str
+
+
+
+
+

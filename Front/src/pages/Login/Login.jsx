@@ -7,6 +7,7 @@ import { UserContext } from "../../context/UserContext";
 import Spinner from "../../components/Spinner";
 import EyeSVG from "../../assets/SVG/EyeSVG";
 
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,6 +19,13 @@ export default function Login() {
   const [timer, setTimer] = useState(0);
   const navigate = useNavigate();
   const [isEmailNotVerified, setIsEmailNotVerified] = useState(false);
+  const [, , language, ] = useContext(UserContext);
+
+  const textes = {
+    en: {1: "Login", 2: "Email", 3: "Password", 4: "Incorrect username or password", 5: "Verify email", 6: "Send code again", 7: "Haven't got any account?", 8: "Sign up", 9: "Forgot your password?", 10: "Reset"},
+    ru: {1: "Вход", 2:"Почта", 3: "Пароль", 4: "Неправильное имя пользователя или пароль", 5: "Подтвердите почту", 6: "Отправить код снова", 7: "Нет аккаунта?", 8: "Зарегистрироваться", 9: "Забыли пароль?", 10: "Сбросить"},
+    it: {1: "Accedi", 2: "Email", 3: "Password", 4: "Nome utente o password errati", 5: "Verifica email", 6: "Invia codice di nuovo", 7: "Non hai un account?", 8: "Iscriviti", 9: "Hai dimenticato la password?", 10: "Reset"},
+  }
 
   useEffect(() => {
     if (timer > 0) {
@@ -51,7 +59,7 @@ export default function Login() {
     if (response.status === 401) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        email: "Incorrect username or password",
+        email: textes[language][4],
       }));
       setIsLoading(false);
       return;
@@ -63,7 +71,7 @@ export default function Login() {
       setIsLoading(false);
       setErrors((prevErrors) => ({
         ...prevErrors,
-        email: "Verify email",
+        email: textes[language][5],
       }));
       return;
     }
@@ -118,10 +126,7 @@ export default function Login() {
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
-  const isFormValid = () => {
-    return email && password;
-  };
-
+ 
   return (
     <div className="flex justify-center items-center h-screen">
       <form
@@ -146,7 +151,7 @@ export default function Login() {
             required
             type="email"
             name="email"
-            placeholder="Email"
+            placeholder={textes[language][2]}
             className="input-reset w-full h-[50px] rounded-full p-4"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -169,7 +174,7 @@ export default function Login() {
                     timer > 0 ? "text-black/30" : "text-black"
                   } flex w-full text-left`}
                 >
-                  Send code again
+                  {textes[language][6]}
                 </button>
                 {timer > 0 && <span>{timer}</span>}
               </div>
@@ -182,7 +187,7 @@ export default function Login() {
               required
               type={showPassword ? "text" : "password"}
               name="password"
-              placeholder="Password"
+              placeholder={textes[language][3]}
               className="input-reset w-full h-[50px] rounded-full p-4"
               value={password}
               onChange={(e) => {
@@ -218,23 +223,23 @@ export default function Login() {
           className={` shadow-xl active:shadow-none btn-primary w-full h-[50px] rounded-full p-4 text-white bg-green-500`}
           // disabled={!isFormValid()}
         >
-          Login
+          {textes[language][1]}
         </button>
         <div className="flex flex-col text-left pt-2 gap-1">
           <span className="">
-            Haven't got any account?{" "}
+            {textes[language][7]}{" "}
             <Link to={"/signup"} className="text-green-500">
-              Sign up
+              {textes[language][8]}
             </Link>
           </span>
           <span className="">
-            Forgot your password?{" "}
+            {textes[language][9]}{" "}
             <button
               type="button"
               onClick={handleResetClick}
               className="text-green-500"
             >
-              Reset
+              {textes[language][10]}
             </button>
           </span>
         </div>

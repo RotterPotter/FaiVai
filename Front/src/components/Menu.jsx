@@ -34,6 +34,9 @@ export default function Menu() {
               Login
             </Link>
           )}
+          <Link onClick={handleClick} to={"/profile"}>
+            Profile
+          </Link>
         </div>
       )}
     </div>

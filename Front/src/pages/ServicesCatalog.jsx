@@ -8,6 +8,7 @@ import ArrowSVG from "../assets/SVG/ArrowSVG";
 import Spinner from "../components/Spinner";
 
 export default function ServicesCatalog() {
+  
   const [services, setServices] = useState([]);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
   const [isOpenSortBy, setIsOpenSortBy] = useState(false);

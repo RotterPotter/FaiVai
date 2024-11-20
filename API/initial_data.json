@@ -7,41 +7,44 @@
     "lastname": "Admin"
   },
   "categories": [
-    "Cleaning",
-    "Plumbing",
-    "Electrical",
-    "Carpentry",
-    "Gardening",
-    "Painting",
-    "Moving",
-    "Delivery",
-    "Handyman"
+    {"en":"Cleaning", "ru": "Уборка", "it": "Cleaning"},
+    
   ],
   "service_types": [
     {
-      "name": "House Cleaning",
+      "name": {"en": "House Cleaning", "ru": "Уборка дома", "it": "House Cleaning"},
       "category_id": 1,
       "available_units": ["m2"]
     },
-    { "name": "Drain Cleaning", "category_id": 2, "available_units": ["Hour"] },
     {
-      "name": "Electrical Installation",
-      "category_id": 3,
-      "available_units": ["Hour"]
+      "name": {"en": "Office Cleaning", "ru": "Уборка офиса", "it": "Office Cleaning"},
+      "category_id": 1,
+      "available_units": ["m2"]
     },
     {
-      "name": "Furniture Assembly",
-      "category_id": 4,
-      "available_units": ["Hour"]
+      "name": {"en": "Carpet Cleaning", "ru": "Чистка ковров", "it": "Carpet Cleaning"},
+      "category_id": 1,
+      "available_units": ["m2"]
     },
-    { "name": "Lawn Mowing", "category_id": 5, "available_units": ["Hour"] },
     {
-      "name": "Interior Painting",
-      "category_id": 6,
-      "available_units": ["Hour"]
+      "name": {"en": "Window Cleaning", "ru": "Мойка окон", "it": "Window Cleaning"},
+      "category_id": 1,
+      "available_units": ["m2"]
     },
-    { "name": "Moving", "category_id": 7, "available_units": ["Hour"] },
-    { "name": "Delivery", "category_id": 8, "available_units": ["Hour"] },
-    { "name": "Handyman", "category_id": 9, "available_units": ["Hour"] }
-  ]
+    {
+      "name": {"en": "Pool Cleaning", "ru": "Уборка бассейна", "it": "Pool Cleaning"},
+      "category_id": 1,
+      "available_units": ["m2"]
+    },
+    {
+      "name": {"en": "Piano Tuning", "ru": "Настройка пианино", "it": "Piano Tuning"},
+      "category_id": 1,
+      "available_units": ["m2"]
+    },
+    {
+      "name": {"en": "Home Security", "ru": "Домашняя безопасность", "it": "Home Security"},
+      "category_id": 1,
+      "available_units": ["m2"]
+    }
+   
 }

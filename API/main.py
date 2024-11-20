@@ -6,6 +6,7 @@ from auth.routes import router as auth_router
 from services.routes import router as services_router
 from service_types.routes import router as service_types_router
 from categories.routes import router as categories_router
+from google_maps.routes import router as google_maps_router
 
 from fastapi import Depends
 
@@ -24,6 +25,8 @@ app.include_router(auth_router)
 app.include_router(services_router)
 app.include_router(service_types_router)
 app.include_router(categories_router)
+app.include_router(google_maps_router)
+
 
 
 if __name__ == '__main__':

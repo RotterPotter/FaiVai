@@ -16,5 +16,6 @@ class Settings:
     POSTGRES_DB: str = os.getenv("POSTGRES_DB")
     HOST: str = os.getenv("HOST")
     PORT: str = os.getenv("PORT")
+    GOOGLE_MAPS_API_KEY: str = os.getenv("GOOGLE_MAPS_API_KEY")
 
 settings = Settings()

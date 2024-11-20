@@ -1,10 +1,10 @@
 import React from "react";
 
-export default function LocationSVG() {
+export default function LocationSVG({size="16px"}) {
   return (
     <svg
-      width="16"
-      height="16"
+      width={size}
+      height={size}
       viewBox="0 0 21 21"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

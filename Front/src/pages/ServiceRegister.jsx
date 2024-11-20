@@ -219,7 +219,7 @@ export default function ServiceRegister() {
         setCategory(null);
         setServiceType(null);
         setPrice(null);
-        setUnit(units[0]);
+        setUnit(availableUnits[0]);
         setDuration(null);
         setAddress(null);
         setAvailbaldeDaysAndHours({});

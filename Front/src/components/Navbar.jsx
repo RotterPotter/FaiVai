@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import Logout from "./Logout.jsx";
 import { UserContext } from "../context/UserContext.jsx";
 
+
 export default function Navbar() {
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [, , language, setLanguage] = useContext(UserContext);
@@ -18,6 +19,8 @@ export default function Navbar() {
   ]);
 
   const [isScrolled, setIsScrolled] = useState(false);
+
+  
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,13 +37,20 @@ export default function Navbar() {
   }, []);
 
   const handleLanguageSelect = (selectedLanguage) => {
+    if (selectedLanguage === "English") {
+      selectedLanguage = "en";
+    } else if (selectedLanguage === "Italiano") {
+      selectedLanguage = "it";
+    } else if (selectedLanguage === "Russian") {
+      selectedLanguage = "ru";
+    }
     setLanguage(selectedLanguage);
   };
 
   return (
     <div
       className={`fixed top-0 left-0 right-0 flex justify-between  items-center py-4 px-8 xl:px-12 2xl:px-48 h-[60px] shadow-md z-50 transition-colors duration-500 ${
-        isScrolled ? "bg-gray-200" : "bg-white"
+        isScrolled ? "bg-navbarBG" : "bg-navbarBG"
       }`}
     >
       <Link to={"/"} className="text-2xl text-green-600 font-bold">
@@ -60,7 +70,7 @@ export default function Navbar() {
                 <button
                   type="button"
                   className={`w-full first:rounded-t-lg last:rounded-b-lg  p-1 px-3 ${
-                    availableLanguage === language
+                    (availableLanguage.startsWith(language[0].toUpperCase()) )
                       ? "bg-green-500  text-white"
                       : "bg-white hover:bg-gray-200  "
                   }`}

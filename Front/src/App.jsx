@@ -23,13 +23,14 @@ import Admin from "./pages/Admin.jsx";
 import YourServices from "./pages/YourServices.jsx";
 import FindService from "./pages/FindService.jsx";
 import ServicesCatalog from "./pages/ServicesCatalog.jsx";
+import Profile from "./pages/Profile.jsx";
 
 function App() {
   const location = useLocation();
   const hideNavbarRoutes = ["/login/emailverified"];
 
   return (
-    <div className="w-full m-0 p-0 ">
+    <div className="w-full m-0 p-0  text-fontColor">
       {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
       <Routes>
         <Route path="/" element={<FindJobs />} />
@@ -48,7 +49,9 @@ function App() {
         <Route path="/services/find/catalog" element={<ServicesCatalog />} />
         <Route path="/admin/" element={<Admin />} />
         <Route path="/your_services/" element={<YourServices />} />
+        <Route path="/profile/" element={<Profile />} />
       </Routes>
+      <div className="mt-[100px] w-full h-[200px] flex justify-center items-center text-white bg-green-500">Footer</div>
     </div>
   );
 }
