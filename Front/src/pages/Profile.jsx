@@ -68,14 +68,14 @@ export default function Profile() {
   }]
 
   return (
-    <div className="mt-[100px] ">
-      <div className="w-full flex justify-center mb-[20px]  ">
-        <div className="w-[300px] h-[50px]  rounded-3xl flex jsutify-center items-center border border-black   bg-gray-200 ">
-          <div className="py-3 px-6 w-1/2 text-center bg-green-500 rounded-3xl text-white">
-            Text
+    <div className="mt-[80px] ">
+      <div className="w-full flex justify-center mb-[20px]  text-lg ">
+        <div className="  rounded-3xl flex jsutify-center items-center border border-black  bg-white ">
+          <div className="px-10 py-1 w-1/2 text-center bg-green-500 rounded-3xl text-white">
+            Client
           </div>
-          <div className="py-3 px-6 w-1/2 text-center bg-gray-200 rounded-3xl">
-            text
+          <div className="px-10 py-1 w-1/2 text-center bg-white rounded-3xl">
+            Worker
           </div>
         </div>
       </div>
@@ -148,7 +148,7 @@ export default function Profile() {
               <div>sort</div>
             </div>
 
-            <div className="p-1 h-[500px] overflow-auto custom-scrollbar">
+            <div className="p-1 h-[400px] overflow-auto custom-scrollbar">
               {reviews.map((review) => (
                 <Review
                   key={review.authorId}
@@ -162,10 +162,10 @@ export default function Profile() {
               ))}
               {reviews.length > 0 && (
                <div className="flex gap-2 w-full justify-center mt-3 ">
-               <button className="flex gap-2 justify-center items-center  border border-black rounded-2xl w-[160px] h-[32px]">
+               <button className="flex gap-2 justify-center items-center  border border-black rounded-2xl w-[160px] py-1">
                  <Arrow degree={90}></Arrow>Previous
                </button>
-               <button className="flex gap-2 justify-center items-center  border border-black rounded-2xl w-[160px] h-[32px]">
+               <button className="flex gap-2 justify-center items-center  border border-black rounded-2xl w-[160px] py-1">
                  Next<Arrow degree={-90}></Arrow>
                </button>
              </div>

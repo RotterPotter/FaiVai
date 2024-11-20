@@ -15,7 +15,7 @@ export default function FindJobs() {
   
 
   return (
-    <div className="flex flex-col justify-center gap-5 items-center mt-[100px]">
+    <div className="flex flex-col justify-start gap-5 items-center mt-[100px] h-screen">
       <p className="text-center text-xl sm:text-3xl">
         {textes[language][1]}
         <div className="text-green-500">{textes[language][2]}</div>
