@@ -22,7 +22,7 @@ class User(Base):
 
     
     services: orm.Mapped[list["Service"]] = orm.relationship("Service", back_populates="owner", cascade="all, delete-orphan")
-
+    
 class TokenBlacklist(Base):
     __tablename__ = 'token_blacklist'
     token: orm.Mapped[str] = orm.mapped_column(primary_key=True, index=True)

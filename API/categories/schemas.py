@@ -3,4 +3,4 @@ from service_types.models import ServiceType
 from typing import Optional, List, Dict
 
 class CategoryCreate(BaseModel):
-  name: Dict[str, str]
+  name: str

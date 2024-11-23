@@ -13,6 +13,6 @@ class Category(Base):
   __tablename__ = "categories"
 
   id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
-  name: orm.Mapped[Dict[str, str]] = orm.mapped_column(JSON)
+  name: orm.Mapped[str] 
   
   service_types: orm.Mapped[List["ServiceType"]] = orm.relationship("ServiceType", back_populates="category", cascade="all, delete-orphan")

@@ -7,8 +7,7 @@
     "lastname": "Admin"
   },
   "categories": [
-    {"en":"Cleaning", "ru": "Уборка", "it": "Cleaning"},
-    
+    {"en":"Cleaning", "ru": "Уборка", "it": "Cleaning"}
   ],
   "service_types": [
     {
@@ -45,6 +44,5 @@
       "name": {"en": "Home Security", "ru": "Домашняя безопасность", "it": "Home Security"},
       "category_id": 1,
       "available_units": ["m2"]
-    }
-   
+    }]
 }

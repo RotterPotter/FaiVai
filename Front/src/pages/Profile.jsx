@@ -7,6 +7,7 @@ import EmailSVG from "../assets/SVG/EmailSVG";
 import Review from "../components/Review";
 import Arrow from "../assets/SVG/ArrowSVG";
 import '../index.css'
+import NewServiceCard from "../components/NewServiceCard";
 
 export default function Profile() {
   const reviews = [{
@@ -67,19 +68,26 @@ export default function Profile() {
     createdAtString: "2 hours ago",
   }]
 
+  const [profileMode, setProfileMode] = React.useState("client");
+
   return (
-    <div className="mt-[80px] ">
-      <div className="w-full flex justify-center mb-[20px]  text-lg ">
+    <div className="mt-[80px] flex flex-col items-center ">
+      <div className="w-full flex justify-center  mb-[20px]  text-lg ">
         <div className="  rounded-3xl flex jsutify-center items-center border border-black  bg-white ">
-          <div className="px-10 py-1 w-1/2 text-center bg-green-500 rounded-3xl text-white">
+          <button onClick={() => setProfileMode("client")} className={`px-10 py-1 w-1/2 text-center transition-colors duration-200  rounded-3xl ${
+            profileMode === "client" ? "bg-green-500 text-white" : "bg-white"
+          }`}>
             Client
-          </div>
-          <div className="px-10 py-1 w-1/2 text-center bg-white rounded-3xl">
+          </button>
+          <button onClick={() => setProfileMode("worker")} className={`px-10 py-1 w-1/2 text-center transition-colors duration-200  rounded-3xl ${
+            profileMode === "worker" ? "bg-green-500 text-white" : "bg-white"
+          }`}>
             Worker
-          </div>
+          </button>
         </div>
       </div>
-      <div className="w-full  flex flex-col gap-5 lg:flex-row sm:gap-5 lg:px-32 px-5">
+      
+      <div className="w-full  max-w-[2000px] flex flex-col gap-5 lg:flex-row lg:justify-center  sm:gap-5 lg:px-32 px-5">
         <div className="bg-white  lg:border lg:border-black  lg:w-[400px] h-[500px] w-full  p-10 pt-5 rounded-xl flex flex-col justify-start items-start lg:items-center gap-3">
           <div className="w-full flex lg:flex-col lg:justify-start lg:items-center justify-center items-center  gap-3">
             <div className="rounded-full w-[200px] h-[200px] bg-white flex justify-center items-center">
@@ -121,7 +129,7 @@ export default function Profile() {
             </div>
           </div>
           <div className="w-full flex justify-center items-center">
-            <button className="px-10 py-1  rounded-full border border-black">
+            <button className="px-10 py-1  hover:shadow-lg  rounded-full border border-black">
               Edit
             </button>
           </div>
@@ -137,6 +145,15 @@ export default function Profile() {
             </p>
           </div>
 
+          {profileMode === "worker" && (
+            <div className="bg-white  border border-black lg:h-[450px] w-full p-5 rounded-xl">
+              <div className=" text-lg font-semibold ">Services</div>
+              <div className="p-1 lg:h-[400px] lg:overflow-auto custom-scrollbar">
+                {/* <NewServiceCard></NewServiceCard> */}
+              </div>
+            </div>
+          )}
+
           <div className="bg-white  border border-black  w-full p-5 rounded-xl">
             <div className="w-full flex justify-between items-center pr-10 pb-5">
               <div className="flex gap-2 justify-start items-start font-semibold">
@@ -145,7 +162,7 @@ export default function Profile() {
                   1
                 </span>
               </div>
-              <div>sort</div>
+              <div></div>
             </div>
 
             <div className="p-1 lg:h-[400px] lg:overflow-auto custom-scrollbar">
