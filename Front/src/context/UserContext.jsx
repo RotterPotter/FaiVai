@@ -18,7 +18,7 @@ export default function UserProvider(props) {
       };
 
       const response = await fetch(
-        "http://localhost:8000/users/me",
+        "http://api/users/me",
         requestOptions
       );
 

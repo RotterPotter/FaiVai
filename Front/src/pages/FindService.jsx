@@ -31,7 +31,7 @@ export default function FindService() {
   // Get categories
   const getCategories = async () => {
     try {
-      const response = await fetch("http://localhost:8000/category/all");
+      const response = await fetch("http:/api/category/all");
       const data = await response.json();
       setCategories(data);
     } catch (error) {
