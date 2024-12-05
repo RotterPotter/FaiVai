@@ -8,11 +8,11 @@ export default function FindJobs() {
   const [token, setToken, language, setLanguage] = useContext(UserContext);
 
   const textes = {
-    en: {1: "Changedddddd!", 2: "Extra Income", 3: "Search location", 4: "Register your service", 5: "Find Services", 6: "Your services", 7: "Logged In"},
+    en: {1: "Find a job nearby and start earning", 2: "Extra Income", 3: "Search location", 4: "Register your service", 5: "Find Services", 6: "Your services", 7: "Logged In"},
     ru: {1: "Найди работу поблизости и начни зарабатывать", 2: "Дополнительный доход", 3: "Поиск местоположения", 4: "Зарегистрировать услугу", 5: "Найти услуги", 6: "Ваши услуги", 7: "Вошли"},
     it: {1: "Trova un lavoro nelle vicinanze e inizia a guadagnare", 2: "Entrata extra", 3: "Cerca posizione", 4: "Registra il tuo servizio", 5: "Trova servizi", 6: "I tuoi servizi", 7: "Loggato"},
   }
-  l
+
 
   return (
     <div className="flex flex-col justify-start gap-5 items-center mt-[100px] h-screen">
